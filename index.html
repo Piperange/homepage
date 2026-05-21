@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王子彦 — 游戏数值/系统策划</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1F4E79',
+        accent: '#2B6DA8',
+        light: '#E8F0F8',
+      }
+    }
+  }
+}
+</script>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "PingFang SC", sans-serif; }
+.section-line { height: 3px; background: linear-gradient(90deg, #1F4E79, transparent); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; }
+.stat-card { transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- 导航 -->
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+    <span class="font-bold text-primary text-lg">王子彦</span>
+    <div class="hidden sm:flex gap-6 text-sm text-gray-600">
+      <a href="#about" class="hover:text-primary">关于</a>
+      <a href="#games" class="hover:text-primary">游戏成就</a>
+      <a href="#projects" class="hover:text-primary">项目</a>
+      <a href="#awards" class="hover:text-primary">竞赛</a>
+      <a href="#contact" class="hover:text-primary">联系</a>
+    </div>
+  </div>
+</nav>
+
+<!-- 头部 -->
+<header class="bg-gradient-to-br from-primary via-accent to-blue-700 text-white">
+  <div class="max-w-4xl mx-auto px-4 py-16 md:py-24">
+    <div class="flex flex-col md:flex-row items-center gap-8">
+      <div class="w-28 h-28 rounded-full bg-white/20 flex items-center justify-center text-4xl font-bold shrink-0 border-2 border-white/30">
+        <i class="fa fa-user"></i>
+      </div>
+      <div class="text-center md:text-left">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">王子彦</h1>
+        <p class="text-white/80 text-lg mb-3">游戏数值/系统策划 · 网易校招</p>
+        <p class="text-white/70 text-sm leading-relaxed max-w-lg">
+          兰州交通大学 · 机械工程硕士（2027.06）<br>
+          数理建模 × 竞技级游戏理解 × 技术原型能力
+        </p>
+        <div class="flex gap-3 mt-4 justify-center md:justify-start flex-wrap">
+          <span class="bg-white/20 text-sm px-3 py-1 rounded-full">MATLAB</span>
+          <span class="bg-white/20 text-sm px-3 py-1 rounded-full">Unity3D</span>
+          <span class="bg-white/20 text-sm px-3 py-1 rounded-full">C 语言</span>
+          <span class="bg-white/20 text-sm px-3 py-1 rounded-full">Prompt Engineering</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+  <!-- 核心竞争力 -->
+  <section id="about">
+    <h2 class="text-2xl font-bold text-primary mb-2">核心竞争力</h2>
+    <div class="section-line mb-6"></div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="stat-card bg-white rounded-lg p-6 shadow-sm border-l-4 border-primary">
+        <div class="text-primary mb-2"><i class="fa fa-line-chart text-2xl"></i></div>
+        <h3 class="font-bold mb-2">数理建模思维</h3>
+        <p class="text-sm text-gray-600">硕士课题为复杂系统动力学建模与仿真，擅长将模糊的交互关系抽象为可量化、可调参的数值模型——与游戏经济系统设计、战斗数值平衡、成长曲线规划的核心方法论高度一致。</p>
+      </div>
+      <div class="stat-card bg-white rounded-lg p-6 shadow-sm border-l-4 border-accent">
+        <div class="text-accent mb-2"><i class="fa fa-gamepad text-2xl"></i></div>
+        <h3 class="font-bold mb-2">竞技级游戏理解</h3>
+        <p class="text-sm text-gray-600">Steam 1200+ 游戏库 + RTS 品类世界级竞技成就，对游戏机制的拆解来自顶级对决中的压力测试——知道一个数值设计在高端对局中如何被放大或解构。</p>
+      </div>
+      <div class="stat-card bg-white rounded-lg p-6 shadow-sm border-l-4 border-green-600">
+        <div class="text-green-600 mb-2"><i class="fa fa-code text-2xl"></i></div>
+        <h3 class="font-bold mb-2">技术落地能力</h3>
+        <p class="text-sm text-gray-600">MATLAB 数值仿真 + Unity3D 交互原型 + C 语言编程，具备将设计思路快速验证为可玩原型的能力，不是纸上谈兵。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 游戏成就 -->
+  <section id="games">
+    <h2 class="text-2xl font-bold text-primary mb-2">游戏成就</h2>
+    <div class="section-line mb-6"></div>
+
+    <h3 class="text-lg font-bold text-gray-700 mb-4">竞技排名</h3>
+    <div class="grid sm:grid-cols-3 gap-4 mb-8">
+      <div class="stat-card bg-white rounded-lg p-5 shadow-sm text-center">
+        <div class="text-3xl font-bold text-primary">Top 20</div>
+        <div class="text-sm font-bold mt-1">风暴崛起 (Stormgate)</div>
+        <div class="text-xs text-gray-500 mt-1">DYN 阵营 · 世界 1v1 排行榜</div>
+        <div class="badge bg-light text-primary mt-2">RTS 新作</div>
+      </div>
+      <div class="stat-card bg-white rounded-lg p-5 shadow-sm text-center">
+        <div class="text-3xl font-bold text-accent">大师</div>
+        <div class="text-sm font-bold mt-1">星际争霸 2</div>
+        <div class="text-xs text-gray-500 mt-1">星灵族 · 多赛季</div>
+        <div class="badge bg-light text-accent mt-2">RTS 标杆</div>
+      </div>
+      <div class="stat-card bg-white rounded-lg p-5 shadow-sm text-center">
+        <div class="text-3xl font-bold text-amber-600">传说</div>
+        <div class="text-sm font-bold mt-1">炉石传说</div>
+        <div class="text-xs text-gray-500 mt-1">多赛季天梯顶尖</div>
+        <div class="badge bg-amber-50 text-amber-600 mt-2">卡牌品类</div>
+      </div>
+    </div>
+
+    <h3 class="text-lg font-bold text-gray-700 mb-4">内测与深度体验</h3>
+    <div class="bg-white rounded-lg p-6 shadow-sm space-y-3">
+      <div class="flex items-start gap-3">
+        <i class="fa fa-check-circle text-green-600 mt-0.5"></i>
+        <div>
+          <span class="font-bold">厂商内测邀约</span>
+          <span class="text-sm text-gray-600"> — V 社《Deadlock》首批内测玩家、Embark 工作室《ARC Raiders》首批内测玩家，以及多个现象级作品内部测试资格。</span>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <i class="fa fa-trophy text-amber-600 mt-0.5"></i>
+        <div>
+          <span class="font-bold">白金全成就</span>
+          <span class="text-sm text-gray-600"> — 主机平台多款游戏达成白金奖杯，每款深入游玩到足以察觉浅层体验无法暴露的平衡性问题与设计缺陷。</span>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <i class="fa fa-globe text-primary mt-0.5"></i>
+        <div>
+          <span class="font-bold">全平台深潜</span>
+          <span class="text-sm text-gray-600"> — PC + 主机 + 手游三端均有大量深入游玩记录，理解不同平台用户的操作惯性、付费心理与社交行为差异。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 游戏理解 -->
+  <section>
+    <h2 class="text-2xl font-bold text-primary mb-2">游戏理解</h2>
+    <div class="section-line mb-6"></div>
+
+    <h3 class="text-lg font-bold text-gray-700 mb-4">典型品类数值框架认知</h3>
+    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+      <div class="bg-white rounded-lg p-4 shadow-sm border-l-2 border-primary">
+        <h4 class="font-bold text-sm text-primary mb-1">MMORPG</h4>
+        <p class="text-xs text-gray-600">《逆水寒》《梦幻西游》：角色属性成长曲线、装备词缀随机池、经济系统通胀/回收机制、PVP 等级匹配算法</p>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm border-l-2 border-accent">
+        <h4 class="font-bold text-sm text-accent mb-1">竞技类</h4>
+        <p class="text-xs text-gray-600">《永劫无间》：武器 DPS 平衡、前后摇帧数对战斗节奏的影响、排位 ELO 算法设计</p>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm border-l-2 border-purple-600">
+        <h4 class="font-bold text-sm text-purple-600 mb-1">Roguelike</h4>
+        <p class="text-xs text-gray-600">《黑帝斯》《Slay the Spire》：随机生成与可控随机、遗物/卡牌词条池设计、难度递进曲线</p>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm border-l-2 border-green-600">
+        <h4 class="font-bold text-sm text-green-600 mb-1">模拟经营</h4>
+        <p class="text-xs text-gray-600">《星露谷物语》《异星工厂》：生产链投入产出比、资源稀缺性与玩家心流节奏的关系</p>
+      </div>
+    </div>
+
+    <h3 class="text-lg font-bold text-gray-700 mb-4">社区贡献</h3>
+    <div class="bg-white rounded-lg p-6 shadow-sm space-y-3">
+      <div class="flex items-start gap-3">
+        <i class="fa fa-steam text-gray-500 mt-0.5"></i>
+        <div>
+          <span class="font-bold text-sm">Steam 游戏评测</span>
+          <span class="text-xs text-gray-600"> — 累计发表大量评测，获多篇社区"有价值"标记，评测侧向于机制拆解与数值分析而非感性评价。</span>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <i class="fa fa-language text-gray-500 mt-0.5"></i>
+        <div>
+          <span class="font-bold text-sm">独立游戏汉化</span>
+          <span class="text-xs text-gray-600"> — 参与 indie 游戏的本地化工作，在翻译过程中深入理解台本结构、叙事节奏与世界观构建逻辑。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目经历 -->
+  <section id="projects">
+    <h2 class="text-2xl font-bold text-primary mb-2">项目经历</h2>
+    <div class="section-line mb-6"></div>
+
+    <div class="bg-white rounded-lg p-6 shadow-sm">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+        <h3 class="font-bold text-lg">数字孪生六轴机械臂管控系统</h3>
+        <span class="text-xs bg-light text-primary px-2 py-0.5 rounded-full">第十五届挑战杯 · 甘肃省三等奖</span>
+      </div>
+      <p class="text-sm text-gray-600 mb-4">与合作者共同设计并制作了一款六轴机械臂，基于数字孪生技术构建了虚实映射的智能管控系统。</p>
+      <div class="grid sm:grid-cols-3 gap-3">
+        <div class="bg-gray-50 rounded p-3 text-sm">
+          <div class="font-bold text-primary text-xs mb-1">三维可视化</div>
+          <div class="text-xs text-gray-600">使用 Unity3D 构建机器人虚拟仿真环境，实现模型渲染、场景漫游、运动仿真与虚实同步交互。</div>
+        </div>
+        <div class="bg-gray-50 rounded p-3 text-sm">
+          <div class="font-bold text-accent text-xs mb-1">运动学建模</div>
+          <div class="text-xs text-gray-600">采用 D-H 法则建立六轴机器人运动学模型，完成正逆运动学求解，实现路径规划与碰撞检测。</div>
+        </div>
+        <div class="bg-gray-50 rounded p-3 text-sm">
+          <div class="font-bold text-green-700 text-xs mb-1">数据驱动</div>
+          <div class="text-xs text-gray-600">通过 NB-IoT 模块采集传感器数据，建立健康参数表，以定量化分析实现异常状态检测。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 竞赛奖项 -->
+  <section id="awards">
+    <h2 class="text-2xl font-bold text-primary mb-2">竞赛奖项</h2>
+    <div class="section-line mb-6"></div>
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="text-left py-3 px-4 font-normal">比赛</th>
+            <th class="text-left py-3 px-4 font-normal hidden sm:table-cell">级别</th>
+            <th class="text-left py-3 px-4 font-normal">奖项</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr>
+            <td class="py-3 px-4 font-bold">第二十八届中国机器人及人工智能大赛</td>
+            <td class="py-3 px-4 text-gray-500 hidden sm:table-cell">省部级</td>
+            <td class="py-3 px-4"><span class="badge bg-yellow-50 text-yellow-700">一等奖（已推荐国赛）</span></td>
+          </tr>
+          <tr class="bg-gray-50">
+            <td class="py-3 px-4 font-bold">第二十四届全国大学生机器人大赛</td>
+            <td class="py-3 px-4 text-gray-500 hidden sm:table-cell">省部级</td>
+            <td class="py-3 px-4"><span class="badge bg-yellow-50 text-yellow-700">一等奖（两个项目）</span></td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-bold">第十五届挑战杯</td>
+            <td class="py-3 px-4 text-gray-500 hidden sm:table-cell">省部级</td>
+            <td class="py-3 px-4"><span class="badge bg-gray-100 text-gray-600">三等奖</span></td>
+          </tr>
+          <tr class="bg-gray-50">
+            <td class="py-3 px-4 font-bold">2025 中国国际大学生创新大赛</td>
+            <td class="py-3 px-4 text-gray-500 hidden sm:table-cell">省部级</td>
+            <td class="py-3 px-4"><span class="badge bg-gray-100 text-gray-600">三等奖</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
+      <span class="bg-white px-2 py-1 rounded">机器人控制逻辑设计 → 游戏实时交互系统规则定义与状态机设计</span>
+      <span class="bg-white px-2 py-1 rounded">AI 算法优化 → NPC 行为树、难度自适应调节</span>
+    </div>
+  </section>
+
+  <!-- 教育经历 -->
+  <section>
+    <h2 class="text-2xl font-bold text-primary mb-2">教育经历</h2>
+    <div class="section-line mb-6"></div>
+    <div class="bg-white rounded-lg p-6 shadow-sm">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+        <h3 class="font-bold text-lg">兰州交通大学 · 机械工程 · 硕士</h3>
+        <span class="badge bg-light text-primary">2025-2026 学年学业奖学金一等奖</span>
+      </div>
+      <p class="text-sm text-gray-500 mb-4">课题方向：齿轮传动系统动力学分析 / 故障识别诊断</p>
+      <p class="text-sm text-gray-600 mb-6">构建多自由度齿轮系统动力学方程，通过 MATLAB 数值仿真模拟不同工况下的系统响应；开发基于振动信号特征提取的故障分类算法；使用 Unity3D 搭建齿轮传动系统可视化仿真平台。</p>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div class="bg-gray-50 rounded p-3 flex items-start gap-2 text-xs">
+          <span class="text-primary shrink-0 mt-0.5"><i class="fa fa-arrow-right"></i></span>
+          <span><span class="font-bold">系统动力学方程建立</span> → 游戏经济/战斗系统的数学模型搭建</span>
+        </div>
+        <div class="bg-gray-50 rounded p-3 flex items-start gap-2 text-xs">
+          <span class="text-primary shrink-0 mt-0.5"><i class="fa fa-arrow-right"></i></span>
+          <span><span class="font-bold">多参数仿真与敏感性分析</span> → 数值平衡调优</span>
+        </div>
+        <div class="bg-gray-50 rounded p-3 flex items-start gap-2 text-xs">
+          <span class="text-primary shrink-0 mt-0.5"><i class="fa fa-arrow-right"></i></span>
+          <span><span class="font-bold">模式识别与分类</span> → 玩家行为聚类分析、反作弊检测</span>
+        </div>
+        <div class="bg-gray-50 rounded p-3 flex items-start gap-2 text-xs">
+          <span class="text-primary shrink-0 mt-0.5"><i class="fa fa-arrow-right"></i></span>
+          <span><span class="font-bold">Unity3D 交互系统开发</span> → 玩法原型的快速搭建与验证</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技能 -->
+  <section>
+    <h2 class="text-2xl font-bold text-primary mb-2">技能</h2>
+    <div class="section-line mb-6"></div>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div class="bg-white rounded-lg p-4 shadow-sm flex gap-3">
+        <div class="text-primary text-xl"><i class="fa fa-bar-chart"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">数值与仿真</h4>
+          <p class="text-xs text-gray-600">MATLAB —— 动力学建模、参数敏感性分析、数据可视化</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm flex gap-3">
+        <div class="text-accent text-xl"><i class="fa fa-terminal"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">编程</h4>
+          <p class="text-xs text-gray-600">C 语言、Unity3D（C#）</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm flex gap-3">
+        <div class="text-purple-600 text-xl"><i class="fa fa-magic"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">AI 工具</h4>
+          <p class="text-xs text-gray-600">Claude Code、Cursor、Codex、HermesAI —— 精通 Prompt Engineering 与 Agent Skill 编写，高效自动化重复性工作</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg p-4 shadow-sm flex gap-3">
+        <div class="text-green-600 text-xl"><i class="fa fa-globe"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">语言</h4>
+          <p class="text-xs text-gray-600">CET-4 / CET-6，英文游戏、文献及开发者博客无障碍阅读</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 个人特质 -->
+  <section>
+    <h2 class="text-2xl font-bold text-primary mb-2">个人特质</h2>
+    <div class="section-line mb-6"></div>
+    <div class="bg-white rounded-lg p-6 shadow-sm space-y-4">
+      <div class="flex gap-3">
+        <div class="text-primary text-lg shrink-0"><i class="fa fa-puzzle-piece"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">系统思维</h4>
+          <p class="text-xs text-gray-600">面对复杂问题，直觉是找出核心变量和它们之间的反馈回路——无论是齿轮传动方程还是游戏经济循环。</p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <div class="text-accent text-lg shrink-0"><i class="fa fa-balance-scale"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">数据与直觉并重</h4>
+          <p class="text-xs text-gray-600">相信数学模型的预测力，也尊重玩家社区的真实反馈——两者冲突时，先怀疑模型。</p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <div class="text-green-600 text-lg shrink-0"><i class="fa fa-rocket"></i></div>
+        <div>
+          <h4 class="font-bold text-sm">自驱力强</h4>
+          <p class="text-xs text-gray-600">独立完成从理论建模 → 数值仿真 → Unity3D 可视化的完整研究链条，无需外部督促。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系方式 -->
+  <section id="contact" class="bg-gradient-to-br from-primary to-accent text-white rounded-xl p-8 text-center">
+    <h2 class="text-xl font-bold mb-4">联系方式</h2>
+    <div class="flex flex-wrap justify-center gap-6 text-sm">
+      <div class="flex items-center gap-2">
+        <i class="fa fa-phone"></i>
+        <span>15507538423</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa fa-envelope"></i>
+        <span>17690282286@sina.cn</span>
+      </div>
+      <a href="https://steamcommunity.com/id/piperange/" target="_blank" rel="noopener" class="flex items-center gap-2 hover:underline">
+        <i class="fa fa-steam"></i>
+        <span>Steam 个人主页</span>
+      </a>
+    </div>
+    <p class="text-white/60 text-xs mt-4">求职意向：网易游戏数值/系统策划 · 2027 届硕士应届生</p>
+  </section>
+
+</main>
+
+<!-- 页脚 -->
+<footer class="text-center py-6 text-xs text-gray-400">
+  <p>王子彦 · 兰州交通大学 · 机械工程硕士 · 求职网易游戏</p>
+</footer>
+
+</body>
+</html>
