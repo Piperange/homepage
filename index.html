@@ -12,42 +12,112 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        dark: '#0F1923',
-        surface: '#1A2733',
-        card: '#1E2D3D',
-        gold: '#D4A853',
-        gold2: '#E8C97A',
-        primary: '#3498DB',
-        accent: '#6C5CE7',
-        teal: '#00D2A0',
-        rose: '#FD79A8',
-        muted: '#8899AA',
+        dark: '#050510',
+        surface: '#0A0D16',
+        card: '#0C1220',
+        gold: '#FFB800',
+        gold2: '#FFD04D',
+        primary: '#00E5FF',
+        accent: '#B847FF',
+        teal: '#00FF88',
+        rose: '#FF2D78',
+        muted: '#8899BB',
       }
     }
   }
 }
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "PingFang SC", sans-serif; background: #0F1923; color: #E8ECF1; }
-.hero-gradient { background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(52,152,219,0.25), transparent 70%), radial-gradient(ellipse 50% 50% at 80% 50%, rgba(108,92,231,0.15), transparent 70%), linear-gradient(180deg, #0F1923 0%, #1A2733 100%); }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "PingFang SC", sans-serif; background: #050510; color: #E0E4F0; }
+/* 暗角 */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0,0,0,0.45) 100%);
+}
+.hero-gradient { background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,229,255,0.2), transparent 65%), radial-gradient(ellipse 50% 50% at 80% 50%, rgba(184,71,255,0.12), transparent 65%), radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,45,120,0.08), transparent 60%), linear-gradient(180deg, #050510 0%, #0A0D16 100%); }
 .card-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-.card-hover:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06); }
-.glow { box-shadow: 0 0 30px -10px rgba(52,152,219,0.3); }
-.glow-green { box-shadow: 0 0 30px -10px rgba(0,210,160,0.3); }
-.glow-purple { box-shadow: 0 0 30px -10px rgba(108,92,231,0.3); }
-.glow-gold { box-shadow: 0 0 30px -10px rgba(212,168,83,0.3); }
-.section-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #3498DB; margin-bottom: 12px; }
-.section-badge::before { content: ''; width: 24px; height: 1px; background: #3498DB; }
-.line-decoration { height: 1px; background: linear-gradient(90deg, rgba(52,152,219,0.6), rgba(52,152,219,0)); margin-bottom: 32px; }
+.card-hover:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.12), 0 0 60px -20px rgba(0,229,255,0.2); }
+.glow { box-shadow: 0 0 40px -12px rgba(0,229,255,0.35), inset 0 1px 0 rgba(0,229,255,0.05); }
+.glow-green { box-shadow: 0 0 40px -12px rgba(0,255,136,0.3), inset 0 1px 0 rgba(0,255,136,0.05); }
+.glow-purple { box-shadow: 0 0 40px -12px rgba(184,71,255,0.3), inset 0 1px 0 rgba(184,71,255,0.05); }
+.glow-gold { box-shadow: 0 0 40px -12px rgba(255,184,0,0.3), inset 0 1px 0 rgba(255,184,0,0.05); }
+.section-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #00E5FF; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+.section-badge::before { content: '> '; color: #FF2D78; }
+.line-decoration { height: 1px; background: linear-gradient(90deg, rgba(0,229,255,0.5), rgba(184,71,255,0.3), transparent); margin-bottom: 32px; }
 .stat-number { font-variant-numeric: tabular-nums; }
-.grid-pattern { background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+.grid-pattern { background-image: radial-gradient(circle, rgba(0,229,255,0.04) 1px, transparent 1px); background-size: 24px 24px; }
 html { scroll-behavior: smooth; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0F1923; }
-::-webkit-scrollbar-thumb { background: #2A3A4A; border-radius: 3px; }
 
-/* ========== 交互动效样式 ========== */
+/* 赛博朋克扫描线 */
+body::after {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9990;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+}
+/* 霓虹文字发光 */
+.neon-text {
+  text-shadow: 0 0 7px rgba(0,229,255,0.6), 0 0 20px rgba(0,229,255,0.3), 0 0 40px rgba(0,229,255,0.15);
+}
+/* 故障文字效果 */
+.glitch {
+  position: relative; display: inline-block;
+}
+.glitch::before, .glitch::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0;
+  pointer-events: none;
+}
+.glitch:hover::before {
+  color: #FF2D78; opacity: 0.75;
+  animation: glitchSkew 0.35s infinite linear alternate-reverse;
+  clip-path: polygon(0 15%, 100% 25%, 100% 30%, 0 20%);
+}
+.glitch:hover::after {
+  color: #00E5FF; opacity: 0.75;
+  animation: glitchSkew 0.35s 0.12s infinite linear alternate-reverse;
+  clip-path: polygon(0 65%, 100% 60%, 100% 75%, 0 70%);
+}
+@keyframes glitchSkew {
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -1px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 1px); }
+  100% { transform: translate(0); }
+}
+/* 二进制装饰滚动条 */
+.binary-divider {
+  overflow: hidden; white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: rgba(0,229,255,0.1); letter-spacing: 2px;
+  padding: 8px 0; user-select: none; pointer-events: none;
+}
+.binary-divider span {
+  display: inline-block;
+  animation: binaryScroll 45s linear infinite;
+}
+@keyframes binaryScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* 卡片霓虹边框脉冲 */
+@keyframes neonPulse {
+  0%, 100% { border-color: rgba(0,229,255,0.15); }
+  50% { border-color: rgba(0,229,255,0.35); }
+}
+.neon-border {
+  animation: neonPulse 3s ease-in-out infinite;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050510; }
+::-webkit-scrollbar-thumb { background: #1A2040; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2A3060; }
 
 /* --- 自定义光标 --- */
 body { cursor: none; }
@@ -55,20 +125,20 @@ a, button, .card-hover, [data-cursor-hover] { cursor: none; }
 #cursorDot {
   position: fixed; pointer-events: none; z-index: 9999;
   width: 6px; height: 6px; margin-left: -3px; margin-top: -3px;
-  background: #3498DB; border-radius: 50%;
+  background: #00E5FF; border-radius: 50%;
   mix-blend-mode: screen;
-  box-shadow: 0 0 8px rgba(52,152,219,0.9), 0 0 18px rgba(52,152,219,0.4);
+  box-shadow: 0 0 10px rgba(0,229,255,0.95), 0 0 22px rgba(0,229,255,0.5), 0 0 40px rgba(0,229,255,0.25);
 }
 #cursorRing {
   position: fixed; pointer-events: none; z-index: 9998;
   width: 36px; height: 36px; margin-left: -18px; margin-top: -18px;
-  border: 1.5px solid rgba(52,152,219,0.35); border-radius: 50%;
-  transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease;
+  border: 1.5px solid rgba(0,229,255,0.35); border-radius: 50%;
+  transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 #cursorRing.hovering {
-  width: 56px; height: 56px; margin-left: -28px; margin-top: -28px;
-  border-color: rgba(232,201,122,0.7);
-  box-shadow: 0 0 20px rgba(212,168,83,0.2);
+  width: 58px; height: 58px; margin-left: -29px; margin-top: -29px;
+  border-color: rgba(255,184,0,0.8);
+  box-shadow: 0 0 28px rgba(255,184,0,0.3), 0 0 60px rgba(255,45,120,0.15);
 }
 
 /* --- Hero 3D 画布 --- */
@@ -77,19 +147,19 @@ a, button, .card-hover, [data-cursor-hover] { cursor: none; }
 /* --- 星空画布 --- */
 #starfield {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 0; pointer-events: none; opacity: 0.55;
+  z-index: 0; pointer-events: none;
 }
 
 /* --- 鼠标光晕 --- */
 #mouseGlow {
   position: fixed; pointer-events: none; z-index: 0;
-  width: 520px; height: 520px; margin-left: -260px; margin-top: -260px;
+  width: 560px; height: 560px; margin-left: -280px; margin-top: -280px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(52,152,219,0.05) 0%, rgba(108,92,231,0.03) 35%, transparent 70%);
+  background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, rgba(184,71,255,0.04) 30%, rgba(255,45,120,0.02) 50%, transparent 70%);
   will-change: left, top;
 }
 
-/* --- 内容层级（nav 已有 fixed+z-50 无需处理）--- */
+/* --- 内容层级 --- */
 header, main, footer { position: relative; z-index: 1; }
 
 /* --- 滚动入场 --- */
@@ -102,8 +172,8 @@ header, main, footer { position: relative; z-index: 1; }
 .revealed { opacity: 1; transform: translateY(0); }
 
 /* --- 打字机光标闪烁 --- */
-.typewriter-cursor { border-right: 2px solid #3498DB; padding-right: 2px; }
-@keyframes twBlink { 0%,100%{ border-color: #3498DB; } 50%{ border-color: transparent; } }
+.typewriter-cursor { border-right: 2px solid #00E5FF; padding-right: 2px; }
+@keyframes twBlink { 0%,100%{ border-color: #00E5FF; } 50%{ border-color: transparent; } }
 .typewriter-cursor { animation: twBlink 0.85s step-end infinite; }
 
 /* --- 移动端恢复默认光标 --- */
@@ -112,6 +182,7 @@ header, main, footer { position: relative; z-index: 1; }
   a, button, .card-hover { cursor: pointer; }
   #cursorDot, #cursorRing { display: none; }
   #mouseGlow { display: none; }
+  body::after { display: none; }
   .reveal { transform: translateY(20px); }
 }
 </style>
@@ -127,7 +198,7 @@ header, main, footer { position: relative; z-index: 1; }
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-dark/80 border-b border-white/5">
   <div class="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
     <a href="#" class="font-bold text-lg tracking-tight">
-      <span class="text-white">王子</span><span class="text-primary">彦</span>
+      <span class="text-white">王子</span><span class="text-white">彦</span>
     </a>
     <div class="hidden md:flex items-center gap-8 text-sm">
       <a href="#about" class="text-muted hover:text-white transition-colors">核心能力</a>
@@ -159,7 +230,7 @@ header, main, footer { position: relative; z-index: 1; }
           <span class="w-1.5 h-1.5 rounded-full bg-teal animate-pulse"></span>
           开放求职 · 2027 届硕士应届生
         </div>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 glitch neon-text" data-text="王子彦">
           王子彦
         </h1>
         <p class="text-lg md:text-xl text-muted mb-2">
@@ -202,6 +273,9 @@ header, main, footer { position: relative; z-index: 1; }
     </div>
   </div>
 
+  <!-- 二进制分隔 -->
+  <div class="binary-divider"><span>01000111 01000001 01001101 01000101 00100000 01000100 01000101 01010011 01001001 01000111 01001110 01000101 01010010 00100000 00111100 00110011 00100000 01000111 01000001 01001101 01000101 00100000 01000100 01000101 01010011 01001001 01000111 01001110 01000101 01010010 00100000 00111100 00110011 00100000 </span></div>
+
   <!-- 核心竞争力 -->
   <section id="about">
     <div class="section-badge">Core Competence</div>
@@ -230,6 +304,9 @@ header, main, footer { position: relative; z-index: 1; }
       </div>
     </div>
   </section>
+
+  <!-- 二进制分隔 -->
+  <div class="binary-divider"><span>01010011 01011001 01010011 01010100 01000101 01001101 01010011 00100000 01001111 01001110 01001100 01001001 01001110 01000101 00100000 00111110 00111110 00100000 01010011 01011001 01010011 01010100 01000101 01001101 01010011 00100000 01001111 01001110 01001100 01001001 01001110 01000101 00100000 00111110 00111110 00100000 </span></div>
 
   <!-- 游戏成就 -->
   <section id="games">
@@ -300,6 +377,8 @@ header, main, footer { position: relative; z-index: 1; }
     </div>
   </section>
 
+  <div class="binary-divider"><span>01001110 01010101 01001101 01000010 01000101 01010010 01010011 00100000 01001110 01000101 01010110 01000101 01010010 00100000 01001100 01001001 01000101 00100000 01001110 01010101 01001101 01000010 01000101 01010010 01010011 00100000 01001110 01000101 01010110 01000101 01010010 00100000 01001100 01001001 01000101 00100000 </span></div>
+
   <!-- 游戏理解 -->
   <section id="insight">
     <div class="section-badge">Game Design Insight</div>
@@ -360,6 +439,8 @@ header, main, footer { position: relative; z-index: 1; }
     </div>
   </section>
 
+  <div class="binary-divider"><span>01010000 01010010 01001111 01001010 01000101 01000011 01010100 01010011 00100000 01001111 01010010 00100000 01000111 01000001 01001101 01000101 01010011 00100000 01010000 01010010 01001111 01001010 01000101 01000011 01010100 01010011 00100000 01001111 01010010 00100000 01000111 01000001 01001101 01000101 01010011 00100000 </span></div>
+
   <!-- 项目经历 -->
   <section id="projects">
     <div class="section-badge">Project Experience</div>
@@ -392,6 +473,8 @@ header, main, footer { position: relative; z-index: 1; }
       </div>
     </div>
   </section>
+
+  <div class="binary-divider"><span>01000011 01001111 01001101 01010000 01000101 01010100 01001001 01010100 01001001 01001111 01001110 00100000 01001001 01010011 00100000 01001110 01001111 01010100 01001000 01001001 01001110 01000111 00100000 01000011 01001111 01001101 01010000 01000101 01010100 01001001 01010100 01001001 01001111 01001110 00100000 01001001 01010011 00100000 01001110 01001111 01010100 01001000 01001001 01001110 01000111 00100000 </span></div>
 
   <!-- 竞赛奖项 -->
   <section id="awards">
@@ -632,14 +715,14 @@ header, main, footer { position: relative; z-index: 1; }
       var icoGeo1 = new THREE.IcosahedronGeometry(1.6, 2);
       var edges1 = new THREE.EdgesGeometry(icoGeo1);
       var line1 = new THREE.LineSegments(edges1,
-        new THREE.LineBasicMaterial({ color: 0x3498DB, transparent: true, opacity: 0.55 }));
+        new THREE.LineBasicMaterial({ color: 0x00E5FF, transparent: true, opacity: 0.6 }));
       line1.userData = { speedX: 0.0025, speedY: 0.0018, speedZ: 0.0012 };
 
       // 中号二十面体 detail=1 → 更清晰的几何线
       var icoGeo2 = new THREE.IcosahedronGeometry(1.05, 1);
       var edges2 = new THREE.EdgesGeometry(icoGeo2);
       var line2 = new THREE.LineSegments(edges2,
-        new THREE.LineBasicMaterial({ color: 0x6C5CE7, transparent: true, opacity: 0.45 }));
+        new THREE.LineBasicMaterial({ color: 0xB847FF, transparent: true, opacity: 0.5 }));
       line2.position.set(0.6, -0.3, 1.2);
       line2.userData = { speedX: -0.003, speedY: 0.002, speedZ: -0.0015 };
 
@@ -647,7 +730,7 @@ header, main, footer { position: relative; z-index: 1; }
       var octGeo = new THREE.OctahedronGeometry(0.5, 0);
       var edges3 = new THREE.EdgesGeometry(octGeo);
       var line3 = new THREE.LineSegments(edges3,
-        new THREE.LineBasicMaterial({ color: 0x00D2A0, transparent: true, opacity: 0.5 }));
+        new THREE.LineBasicMaterial({ color: 0x00FF88, transparent: true, opacity: 0.5 }));
       line3.position.set(-1.1, 0.5, 1.8);
       line3.userData = { speedX: 0.004, speedY: 0.0025, speedZ: 0.003 };
 
@@ -655,7 +738,7 @@ header, main, footer { position: relative; z-index: 1; }
       var tetGeo = new THREE.TetrahedronGeometry(0.35, 0);
       var edges4 = new THREE.EdgesGeometry(tetGeo);
       var line4 = new THREE.LineSegments(edges4,
-        new THREE.LineBasicMaterial({ color: 0xE8C97A, transparent: true, opacity: 0.5 }));
+        new THREE.LineBasicMaterial({ color: 0xFFB800, transparent: true, opacity: 0.55 }));
       line4.position.set(0.9, -0.7, 1.5);
       line4.userData = { speedX: -0.0035, speedY: -0.002, speedZ: 0.0025 };
 
@@ -705,72 +788,207 @@ header, main, footer { position: relative; z-index: 1; }
     }
   }
 
-  // ========== 1. 星空粒子背景 ==========
-  const starCanvas = document.getElementById('starfield');
-  const starCtx = starCanvas.getContext('2d');
-  let stars = [];
-  const STAR_COUNT = 110;
-  let frame = 0;
+  // ========== 1. 阿基拉风格动态背景 ==========
+  const bgCanvas = document.getElementById('starfield');
+  const bgCtx = bgCanvas.getContext('2d');
+  const gridCanvas = document.createElement('canvas');
+  const gridCtx = gridCanvas.getContext('2d');
+  let bgFrame = 0;
+  let gridDirty = true;
+  let currentSec = 0, targetSec = 0;
+  const GS = 44; // 网格间距
 
-  function resizeStarfield() {
-    starCanvas.width = window.innerWidth;
-    starCanvas.height = window.innerHeight;
+  function resizeBg() {
+    bgCanvas.width = innerWidth;
+    bgCanvas.height = innerHeight;
+    gridCanvas.width = Math.ceil(innerWidth / GS) * GS + GS;
+    gridCanvas.height = Math.ceil(innerHeight / GS) * GS + GS;
+    gridDirty = true;
   }
 
-  function makeStars() {
-    stars = [];
-    for (let i = 0; i < STAR_COUNT; i++) {
-      const hueRand = Math.random();
-      let hue, saturation;
-      if (hueRand < 0.75) { hue = 200 + Math.random() * 30; saturation = '30%'; }      // 蓝白
-      else if (hueRand < 0.90) { hue = 250 + Math.random() * 20; saturation = '50%'; } // 紫
-      else { hue = 160 + Math.random() * 20; saturation = '45%'; }                     // 青绿
-      stars.push({
-        x: Math.random() * starCanvas.width,
-        y: Math.random() * starCanvas.height,
-        r: Math.random() * 1.8 + 0.3,
-        baseAlpha: Math.random() * 0.25 + 0.12,
-        alpha: 0, phase: Math.random() * Math.PI * 2,
-        twinkle: Math.random() * 0.018 + 0.006,
-        dx: (Math.random() - 0.5) * 0.12,
-        dy: -(Math.random() * 0.22 + 0.04),
-        hue, saturation,
+  // 绘制阿基拉红色点阵到离屏 Canvas
+  function renderGrid() {
+    if (!gridDirty) return;
+    gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+    const w = gridCanvas.width, h = gridCanvas.height;
+    // 规则红色点阵
+    for (let x = GS; x < w; x += GS) {
+      for (let y = GS; y < h; y += GS) {
+        gridCtx.fillStyle = 'rgba(172,38,28,0.2)';
+        gridCtx.beginPath();
+        gridCtx.arc(x, y, 1.1, 0, Math.PI * 2);
+        gridCtx.fill();
+      }
+    }
+    // 稀疏亮红点（模拟阿基拉能量节点）
+    for (let i = 0; i < 100; i++) {
+      const nx = Math.random() * w;
+      const ny = Math.random() * h;
+      gridCtx.fillStyle = 'rgba(195,45,32,0.32)';
+      gridCtx.beginPath();
+      gridCtx.arc(nx, ny, 1.6, 0, Math.PI * 2);
+      gridCtx.fill();
+      gridCtx.fillStyle = 'rgba(200,50,35,0.08)';
+      gridCtx.beginPath();
+      gridCtx.arc(nx, ny, 6, 0, Math.PI * 2);
+      gridCtx.fill();
+    }
+    gridDirty = false;
+  }
+
+  // 二进制雨
+  const BIN_COLS = 35;
+  const binCols = [];
+  for (let i = 0; i < BIN_COLS; i++) {
+    binCols.push({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      spd: 0.2 + Math.random() * 0.7,
+      len: 5 + Math.floor(Math.random() * 12),
+      alpha: 0.04 + Math.random() * 0.07,
+    });
+  }
+
+  // 浮动光粒子
+  const PT_COUNT = 55;
+  const pts = [];
+  for (let i = 0; i < PT_COUNT; i++) {
+    pts.push({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      r: Math.random() * 2 + 0.5,
+      vx: (Math.random() - 0.5) * 0.22,
+      vy: -(Math.random() * 0.35 + 0.06),
+      alpha: Math.random() * 0.2 + 0.06,
+      ph: Math.random() * Math.PI * 2,
+    });
+  }
+
+  // 二进制显示器面板
+  const monitors = [];
+  function spawnMonitors() {
+    monitors.length = 0;
+    for (let i = 0; i < 5; i++) {
+      monitors.push({
+        rx: 0.08 + Math.random() * 0.84,
+        ry: 0.15 + Math.random() * 0.7,
+        cols: 4 + Math.floor(Math.random() * 8),
+        rows: 2 + Math.floor(Math.random() * 4),
+        alpha: 0.25 + Math.random() * 0.25,
+        flicker: 0,
       });
     }
   }
+  spawnMonitors();
 
-  function drawStarfield() {
-    starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-    frame++;
-    for (const s of stars) {
-      s.alpha = s.baseAlpha + 0.18 * Math.sin(frame * s.twinkle + s.phase);
-      s.x += s.dx;
-      s.y += s.dy;
-      if (s.y < -8) { s.y = starCanvas.height + 8; s.x = Math.random() * starCanvas.width; }
-      if (s.x < -8) s.x = starCanvas.width + 8;
-      if (s.x > starCanvas.width + 8) s.x = -8;
-
-      starCtx.fillStyle = `hsla(${s.hue},${s.saturation},80%,${Math.max(0,s.alpha)})`;
-      starCtx.beginPath();
-      starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      starCtx.fill();
-
-      // 高亮核心光晕
-      if (s.alpha > s.baseAlpha + 0.11) {
-        const glowAlpha = Math.max(0, s.alpha - s.baseAlpha) * 0.7;
-        starCtx.fillStyle = `hsla(${s.hue},${s.saturation},90%,${glowAlpha})`;
-        starCtx.beginPath();
-        starCtx.arc(s.x, s.y, s.r * 2.2, 0, Math.PI * 2);
-        starCtx.fill();
-      }
-    }
-    requestAnimationFrame(drawStarfield);
+  // 跟踪滚动位置
+  function trackSection() {
+    const secs = document.querySelectorAll('section[id]');
+    let best = 0, bi = 0;
+    secs.forEach((s, i) => {
+      const r = s.getBoundingClientRect();
+      const v = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
+      if (v > best) { best = v; bi = i; }
+    });
+    targetSec = bi;
+    currentSec += (targetSec - currentSec) * 0.04;
   }
 
-  resizeStarfield();
-  makeStars();
-  drawStarfield();
-  window.addEventListener('resize', () => { resizeStarfield(); makeStars(); });
+  function drawBg() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgFrame++;
+    trackSection();
+
+    // 第 0 层：阿基拉点阵（定期更新以适应滚动变化）
+    if (bgFrame % 45 === 0) gridDirty = true;
+    renderGrid();
+    const gridAlpha = 0.55 + Math.sin(currentSec * 0.8) * 0.25;
+    bgCtx.globalAlpha = Math.max(0.3, Math.min(0.85, gridAlpha));
+    bgCtx.drawImage(gridCanvas, 0, 0);
+    bgCtx.globalAlpha = 1;
+
+    // 第 1 层：大范围环境光晕（阿基拉能量环）
+    for (let i = 0; i < 3; i++) {
+      const hx = bgCanvas.width * (0.2 + i * 0.3 + Math.sin(bgFrame * 0.002 + i) * 0.18);
+      const hy = bgCanvas.height * (0.25 + i * 0.22 + Math.cos(bgFrame * 0.0018 + i) * 0.15);
+      const grad = bgCtx.createRadialGradient(hx, hy, 0, hx, hy, 180 + Math.sin(bgFrame * 0.01 + i) * 50);
+      grad.addColorStop(0, 'rgba(170,32,22,0.025)');
+      grad.addColorStop(0.5, 'rgba(140,25,18,0.012)');
+      grad.addColorStop(1, 'transparent');
+      bgCtx.fillStyle = grad;
+      bgCtx.fillRect(hx - 220, hy - 220, 440, 440);
+    }
+
+    // 第 2 层：二进制显示器
+    bgCtx.font = '9px "JetBrains Mono", monospace';
+    for (const mon of monitors) {
+      const mx = mon.rx * bgCanvas.width;
+      const my = mon.ry * bgCanvas.height;
+      const mw = mon.cols * 12 + 14;
+      const mh = mon.rows * 15 + 12;
+      // 面板背景
+      bgCtx.fillStyle = 'rgba(8,4,2,0.35)';
+      bgCtx.fillRect(mx, my, mw, mh);
+      bgCtx.strokeStyle = 'rgba(160,32,20,0.2)';
+      bgCtx.lineWidth = 0.5;
+      bgCtx.strokeRect(mx, my, mw, mh);
+      // 面板标题
+      bgCtx.fillStyle = 'rgba(180,40,28,0.45)';
+      bgCtx.fillText('MON' + ('0' + (monitors.indexOf(mon) + 1)).slice(-2), mx + 6, my + 12);
+      // 二进制行（会变化的数字）
+      for (let row = 0; row < mon.rows; row++) {
+        let line = '';
+        for (let col = 0; col < mon.cols; col++) {
+          line += Math.random() > 0.5 ? '1' : '0';
+        }
+        mon.flicker += 0.05;
+        const flick = Math.sin(mon.flicker + row) * 0.12;
+        bgCtx.fillStyle = 'rgba(200,48,32,' + Math.max(0.08, mon.alpha + flick) + ')';
+        bgCtx.fillText(line, mx + 6, my + 27 + row * 14);
+      }
+    }
+
+    // 第 3 层：二进制雨
+    bgCtx.font = '10px "JetBrains Mono", monospace';
+    for (const col of binCols) {
+      for (let i = 0; i < col.len; i++) {
+        const cy = col.y - i * 15;
+        if (cy < -5 || cy > bgCanvas.height + 5) continue;
+        const a = col.alpha * (1 - i / col.len);
+        bgCtx.fillStyle = 'rgba(190,42,28,' + a + ')';
+        bgCtx.fillText(Math.random() > 0.5 ? '1' : '0', col.x, cy);
+      }
+      col.y += col.spd;
+      if (col.y - col.len * 15 > bgCanvas.height) {
+        col.y = -(col.len * 15 + Math.random() * 200);
+        col.x = Math.random() * bgCanvas.width;
+      }
+    }
+
+    // 第 4 层：浮动光粒子
+    const t = bgFrame * 0.008;
+    for (const p of pts) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y < -10) { p.y = bgCanvas.height + 10; p.x = Math.random() * bgCanvas.width; }
+      if (p.x < -10 || p.x > bgCanvas.width + 10) { p.x = Math.random() * bgCanvas.width; }
+      const a = p.alpha + Math.sin(t + p.ph) * 0.07;
+      bgCtx.fillStyle = 'rgba(195,45,30,' + Math.max(0, a) + ')';
+      bgCtx.beginPath();
+      bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      bgCtx.fill();
+      bgCtx.fillStyle = 'rgba(200,50,35,' + Math.max(0, a * 0.3) + ')';
+      bgCtx.beginPath();
+      bgCtx.arc(p.x, p.y, p.r * 3.5, 0, Math.PI * 2);
+      bgCtx.fill();
+    }
+
+    requestAnimationFrame(drawBg);
+  }
+
+  resizeBg();
+  drawBg();
+  window.addEventListener('resize', () => { resizeBg(); spawnMonitors(); });
 
   // ========== 2. 自定义光标 ==========
   const dot = document.getElementById('cursorDot');
@@ -881,7 +1099,7 @@ header, main, footer { position: relative; z-index: 1; }
           (rotY > 0 ? sx : -sx) + 'px ' +
           (rotX > 0 ? -sy : sy) + 'px 28px -10px rgba(0,0,0,0.45), ' +
           '0 0 0 1px rgba(255,255,255,0.07), ' +
-          (rotY * 0.6) + 'px ' + (-rotX * 0.6) + 'px 24px -6px rgba(52,152,219,0.15)';
+          (rotY * 0.6) + 'px ' + (-rotX * 0.6) + 'px 24px -6px rgba(0,229,255,0.2)';
       });
       card.addEventListener('mouseleave', function() {
         card.style.transform = '';
@@ -911,11 +1129,47 @@ header, main, footer { position: relative; z-index: 1; }
     }, 58);
   }
 
+  // ========== 8. 名称散射入场 ==========
+  function setupNameScatter() {
+    var h1 = document.querySelector('header h1');
+    if (!h1 || window.innerWidth < 768) { h1 && h1.classList.add('neon-text'); return; }
+    var text = h1.textContent;
+    var chars = text.split('');
+    h1.innerHTML = '';
+    h1.classList.add('neon-text');
+    chars.forEach(function(char, i) {
+      var span = document.createElement('span');
+      span.textContent = char;
+      span.style.display = 'inline-block';
+      span.style.position = 'relative';
+      span.style.transition = 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ' + (i * 0.05) + 's, opacity 0.35s ease ' + (i * 0.05) + 's';
+      var a = Math.random() * Math.PI * 2;
+      var d = 35 + Math.random() * 45;
+      span.style.transform = 'translate(' + Math.cos(a) * d + 'px, ' + Math.sin(a) * d + 'px) rotate(' + ((Math.random() - 0.5) * 25) + 'deg)';
+      span.style.opacity = '0';
+      h1.appendChild(span);
+    });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        h1.querySelectorAll('span').forEach(function(s) {
+          s.style.transform = 'translate(0, 0) rotate(0deg)';
+          s.style.opacity = '1';
+        });
+      });
+    });
+    var maxDelay = chars.length * 0.05 + 0.7;
+    setTimeout(function() {
+      h1.textContent = text;
+      h1.classList.add('neon-text');
+    }, maxDelay * 1000 + 300);
+  }
+
   // ========== 启动所有效果 ==========
   setupReveal();
   setupCountUp();
   setupTilt();
   setupTypewriter();
+  setupNameScatter();
 })();
 </script>
 </body>
