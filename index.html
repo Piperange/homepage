@@ -6,6 +6,7 @@
 <title>王子彦 — 游戏设计师</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -45,9 +46,82 @@ html { scroll-behavior: smooth; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0F1923; }
 ::-webkit-scrollbar-thumb { background: #2A3A4A; border-radius: 3px; }
+
+/* ========== 交互动效样式 ========== */
+
+/* --- 自定义光标 --- */
+body { cursor: none; }
+a, button, .card-hover, [data-cursor-hover] { cursor: none; }
+#cursorDot {
+  position: fixed; pointer-events: none; z-index: 9999;
+  width: 6px; height: 6px; margin-left: -3px; margin-top: -3px;
+  background: #3498DB; border-radius: 50%;
+  mix-blend-mode: screen;
+  box-shadow: 0 0 8px rgba(52,152,219,0.9), 0 0 18px rgba(52,152,219,0.4);
+}
+#cursorRing {
+  position: fixed; pointer-events: none; z-index: 9998;
+  width: 36px; height: 36px; margin-left: -18px; margin-top: -18px;
+  border: 1.5px solid rgba(52,152,219,0.35); border-radius: 50%;
+  transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease;
+}
+#cursorRing.hovering {
+  width: 56px; height: 56px; margin-left: -28px; margin-top: -28px;
+  border-color: rgba(232,201,122,0.7);
+  box-shadow: 0 0 20px rgba(212,168,83,0.2);
+}
+
+/* --- Hero 3D 画布 --- */
+#hero3d canvas { display: block; width: 100%; height: 100%; }
+
+/* --- 星空画布 --- */
+#starfield {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; opacity: 0.55;
+}
+
+/* --- 鼠标光晕 --- */
+#mouseGlow {
+  position: fixed; pointer-events: none; z-index: 0;
+  width: 520px; height: 520px; margin-left: -260px; margin-top: -260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52,152,219,0.05) 0%, rgba(108,92,231,0.03) 35%, transparent 70%);
+  will-change: left, top;
+}
+
+/* --- 内容层级（nav 已有 fixed+z-50 无需处理）--- */
+header, main, footer { position: relative; z-index: 1; }
+
+/* --- 滚动入场 --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.revealed { opacity: 1; transform: translateY(0); }
+
+/* --- 打字机光标闪烁 --- */
+.typewriter-cursor { border-right: 2px solid #3498DB; padding-right: 2px; }
+@keyframes twBlink { 0%,100%{ border-color: #3498DB; } 50%{ border-color: transparent; } }
+.typewriter-cursor { animation: twBlink 0.85s step-end infinite; }
+
+/* --- 移动端恢复默认光标 --- */
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  a, button, .card-hover { cursor: pointer; }
+  #cursorDot, #cursorRing { display: none; }
+  #mouseGlow { display: none; }
+  .reveal { transform: translateY(20px); }
+}
 </style>
 </head>
 <body>
+
+<canvas id="starfield"></canvas>
+<div id="mouseGlow"></div>
+<div id="cursorDot"></div>
+<div id="cursorRing"></div>
 
 <!-- 导航 -->
 <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-dark/80 border-b border-white/5">
@@ -67,8 +141,9 @@ html { scroll-behavior: smooth; }
 </nav>
 
 <!-- 头部 -->
-<header class="hero-gradient pt-24 pb-16 md:pt-32 md:pb-24">
-  <div class="max-w-5xl mx-auto px-6">
+<header class="hero-gradient pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
+  <div id="hero3d" class="absolute inset-0 z-0"></div>
+  <div class="max-w-5xl mx-auto px-6 relative z-10">
     <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
       <!-- 照片 -->
       <div class="shrink-0 relative">
@@ -534,5 +609,314 @@ html { scroll-behavior: smooth; }
   <p class="text-xs text-muted/50 mt-1">Piperange &copy; 2026</p>
 </footer>
 
+<script>
+(function() {
+  // ========== 0. Hero 3D 线框互动 ==========
+  if (typeof THREE !== 'undefined') {
+    var hero3d = document.getElementById('hero3d');
+    if (hero3d) {
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(40, hero3d.clientWidth / Math.max(hero3d.clientHeight, 1), 0.1, 30);
+      camera.position.z = 9;
+
+      var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(hero3d.clientWidth, hero3d.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      hero3d.appendChild(renderer.domElement);
+
+      // 创建线框几何体组
+      var mainGroup = new THREE.Group();
+      scene.add(mainGroup);
+
+      // 大号二十面体 detail=2 → 密集线框球
+      var icoGeo1 = new THREE.IcosahedronGeometry(1.6, 2);
+      var edges1 = new THREE.EdgesGeometry(icoGeo1);
+      var line1 = new THREE.LineSegments(edges1,
+        new THREE.LineBasicMaterial({ color: 0x3498DB, transparent: true, opacity: 0.55 }));
+      line1.userData = { speedX: 0.0025, speedY: 0.0018, speedZ: 0.0012 };
+
+      // 中号二十面体 detail=1 → 更清晰的几何线
+      var icoGeo2 = new THREE.IcosahedronGeometry(1.05, 1);
+      var edges2 = new THREE.EdgesGeometry(icoGeo2);
+      var line2 = new THREE.LineSegments(edges2,
+        new THREE.LineBasicMaterial({ color: 0x6C5CE7, transparent: true, opacity: 0.45 }));
+      line2.position.set(0.6, -0.3, 1.2);
+      line2.userData = { speedX: -0.003, speedY: 0.002, speedZ: -0.0015 };
+
+      // 小号八面体
+      var octGeo = new THREE.OctahedronGeometry(0.5, 0);
+      var edges3 = new THREE.EdgesGeometry(octGeo);
+      var line3 = new THREE.LineSegments(edges3,
+        new THREE.LineBasicMaterial({ color: 0x00D2A0, transparent: true, opacity: 0.5 }));
+      line3.position.set(-1.1, 0.5, 1.8);
+      line3.userData = { speedX: 0.004, speedY: 0.0025, speedZ: 0.003 };
+
+      // 小四面体
+      var tetGeo = new THREE.TetrahedronGeometry(0.35, 0);
+      var edges4 = new THREE.EdgesGeometry(tetGeo);
+      var line4 = new THREE.LineSegments(edges4,
+        new THREE.LineBasicMaterial({ color: 0xE8C97A, transparent: true, opacity: 0.5 }));
+      line4.position.set(0.9, -0.7, 1.5);
+      line4.userData = { speedX: -0.0035, speedY: -0.002, speedZ: 0.0025 };
+
+      mainGroup.add(line1);
+      mainGroup.add(line2);
+      mainGroup.add(line3);
+      mainGroup.add(line4);
+
+      // 鼠标追踪
+      var targetX = 0, targetY = 0;
+      var currentX = 0, currentY = 0;
+
+      document.addEventListener('mousemove', function(e) {
+        targetX = (e.clientX / window.innerWidth) * 2 - 1;
+        targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      // 触摸支持
+      document.addEventListener('touchmove', function(e) {
+        targetX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+        targetY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+      }, { passive: true });
+
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        // 平滑跟随鼠标
+        currentX += (targetX - currentX) * 0.04;
+        currentY += (targetY - currentY) * 0.04;
+        mainGroup.rotation.y += (currentX * 0.7 - mainGroup.rotation.y) * 0.08;
+        mainGroup.rotation.x += (currentY * 0.4 - mainGroup.rotation.x) * 0.08;
+        // 每个几何体自转
+        mainGroup.children.forEach(function(child) {
+          child.rotation.x += child.userData.speedX;
+          child.rotation.y += child.userData.speedY;
+          child.rotation.z += child.userData.speedZ;
+        });
+        renderer.render(scene, camera);
+      }
+      animate3D();
+
+      // 响应窗口大小
+      window.addEventListener('resize', function() {
+        camera.aspect = hero3d.clientWidth / Math.max(hero3d.clientHeight, 1);
+        camera.updateProjectionMatrix();
+        renderer.setSize(hero3d.clientWidth, hero3d.clientHeight);
+      });
+    }
+  }
+
+  // ========== 1. 星空粒子背景 ==========
+  const starCanvas = document.getElementById('starfield');
+  const starCtx = starCanvas.getContext('2d');
+  let stars = [];
+  const STAR_COUNT = 110;
+  let frame = 0;
+
+  function resizeStarfield() {
+    starCanvas.width = window.innerWidth;
+    starCanvas.height = window.innerHeight;
+  }
+
+  function makeStars() {
+    stars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+      const hueRand = Math.random();
+      let hue, saturation;
+      if (hueRand < 0.75) { hue = 200 + Math.random() * 30; saturation = '30%'; }      // 蓝白
+      else if (hueRand < 0.90) { hue = 250 + Math.random() * 20; saturation = '50%'; } // 紫
+      else { hue = 160 + Math.random() * 20; saturation = '45%'; }                     // 青绿
+      stars.push({
+        x: Math.random() * starCanvas.width,
+        y: Math.random() * starCanvas.height,
+        r: Math.random() * 1.8 + 0.3,
+        baseAlpha: Math.random() * 0.25 + 0.12,
+        alpha: 0, phase: Math.random() * Math.PI * 2,
+        twinkle: Math.random() * 0.018 + 0.006,
+        dx: (Math.random() - 0.5) * 0.12,
+        dy: -(Math.random() * 0.22 + 0.04),
+        hue, saturation,
+      });
+    }
+  }
+
+  function drawStarfield() {
+    starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+    frame++;
+    for (const s of stars) {
+      s.alpha = s.baseAlpha + 0.18 * Math.sin(frame * s.twinkle + s.phase);
+      s.x += s.dx;
+      s.y += s.dy;
+      if (s.y < -8) { s.y = starCanvas.height + 8; s.x = Math.random() * starCanvas.width; }
+      if (s.x < -8) s.x = starCanvas.width + 8;
+      if (s.x > starCanvas.width + 8) s.x = -8;
+
+      starCtx.fillStyle = `hsla(${s.hue},${s.saturation},80%,${Math.max(0,s.alpha)})`;
+      starCtx.beginPath();
+      starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      starCtx.fill();
+
+      // 高亮核心光晕
+      if (s.alpha > s.baseAlpha + 0.11) {
+        const glowAlpha = Math.max(0, s.alpha - s.baseAlpha) * 0.7;
+        starCtx.fillStyle = `hsla(${s.hue},${s.saturation},90%,${glowAlpha})`;
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r * 2.2, 0, Math.PI * 2);
+        starCtx.fill();
+      }
+    }
+    requestAnimationFrame(drawStarfield);
+  }
+
+  resizeStarfield();
+  makeStars();
+  drawStarfield();
+  window.addEventListener('resize', () => { resizeStarfield(); makeStars(); });
+
+  // ========== 2. 自定义光标 ==========
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = innerWidth / 2, my = innerHeight / 2;
+  let rx = mx, ry = my;
+
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.22;
+    ry += (my - ry) * 0.22;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // hover 检测
+  const hoverTargets = document.querySelectorAll('a, button, .card-hover');
+  hoverTargets.forEach(function(el) {
+    el.addEventListener('mouseenter', function() { ring.classList.add('hovering'); });
+    el.addEventListener('mouseleave', function() { ring.classList.remove('hovering'); });
+  });
+
+  // 离开窗口时隐藏
+  document.addEventListener('mouseleave', function() { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+  document.addEventListener('mouseenter', function() { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+
+  // ========== 3. 鼠标光晕 ==========
+  const glow = document.getElementById('mouseGlow');
+  document.addEventListener('mousemove', function(e) {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  // ========== 4. 滚动入场动画 ==========
+  function setupReveal() {
+    // 给卡片元素打上 reveal 标记
+    document.querySelectorAll('.card-hover').forEach(function(el) { el.classList.add('reveal'); });
+    document.querySelectorAll('.section-badge, section > h2, section > h3').forEach(function(el) { el.classList.add('reveal'); });
+    // 顶部数据统计条
+    document.querySelectorAll('.grid.grid-cols-2.md\\:grid-cols-4 > div').forEach(function(el) { el.classList.add('reveal'); });
+
+    // 同组卡片递延
+    var parents = new Set();
+    document.querySelectorAll('.card-hover.reveal').forEach(function(el) { parents.add(el.parentElement); });
+    parents.forEach(function(p) {
+      var cards = [].filter.call(p.children, function(c) { return c.classList.contains('reveal'); });
+      cards.forEach(function(c, i) { c.style.transitionDelay = (i * 0.07) + 's'; });
+    });
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+  }
+
+  // ========== 5. 数字递增 ==========
+  function setupCountUp() {
+    var targets = document.querySelectorAll('.stat-number');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var text = el.textContent || '';
+        var m = text.match(/^(\d+)/);
+        if (!m) { observer.unobserve(el); return; }
+        var target = parseInt(m[0]);
+        var suffix = text.slice(m[0].length);
+        var duration = 1800;
+        var start = performance.now();
+        function step(ts) {
+          var p = Math.min((ts - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) { requestAnimationFrame(step); }
+          else { el.textContent = target + suffix; }
+        }
+        requestAnimationFrame(step);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.65 });
+    targets.forEach(function(el) { observer.observe(el); });
+  }
+
+  // ========== 6. 3D 卡片倾斜 ==========
+  function setupTilt() {
+    document.querySelectorAll('.card-hover').forEach(function(card) {
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var rotY = ((x - cx) / cx) * 7;
+        var rotX = ((y - cy) / cy) * -7;
+        card.style.transform = 'perspective(900px) translateY(-6px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+        var sx = Math.abs(rotY); var sy = Math.abs(rotX);
+        card.style.boxShadow =
+          (rotY > 0 ? sx : -sx) + 'px ' +
+          (rotX > 0 ? -sy : sy) + 'px 28px -10px rgba(0,0,0,0.45), ' +
+          '0 0 0 1px rgba(255,255,255,0.07), ' +
+          (rotY * 0.6) + 'px ' + (-rotX * 0.6) + 'px 24px -6px rgba(52,152,219,0.15)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transform = '';
+        card.style.boxShadow = '';
+      });
+    });
+  }
+
+  // ========== 7. 打字机效果 ==========
+  function setupTypewriter() {
+    var tagline = document.querySelector('header p.text-lg');
+    if (!tagline) return;
+    var originalHTML = tagline.innerHTML;
+    var rawText = tagline.textContent.replace(/\s+/g, ' ').trim();
+    tagline.textContent = '';
+    tagline.classList.add('typewriter-cursor');
+    var i = 0;
+    var iv = setInterval(function() {
+      if (i < rawText.length) {
+        tagline.textContent = rawText.slice(0, i + 1);
+        i++;
+      } else {
+        clearInterval(iv);
+        tagline.innerHTML = originalHTML;
+        tagline.classList.remove('typewriter-cursor');
+      }
+    }, 58);
+  }
+
+  // ========== 启动所有效果 ==========
+  setupReveal();
+  setupCountUp();
+  setupTilt();
+  setupTypewriter();
+})();
+</script>
 </body>
 </html>
