@@ -44,8 +44,9 @@ body::before {
 .glow-green { box-shadow: 0 0 40px -12px rgba(0,255,136,0.3), inset 0 1px 0 rgba(0,255,136,0.05); }
 .glow-purple { box-shadow: 0 0 40px -12px rgba(184,71,255,0.3), inset 0 1px 0 rgba(184,71,255,0.05); }
 .glow-gold { box-shadow: 0 0 40px -12px rgba(255,184,0,0.3), inset 0 1px 0 rgba(255,184,0,0.05); }
-.section-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #00E5FF; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
-.section-badge::before { content: '> '; color: #FF2D78; }
+.section-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+.section-badge::before { content: '>'; color: rgba(255,255,255,0.2); margin-right: 2px; }
+.section-badge .cursor-blink { background: rgba(255,255,255,0.4); }
 .line-decoration { height: 1px; background: linear-gradient(90deg, rgba(0,229,255,0.5), rgba(184,71,255,0.3), transparent); margin-bottom: 32px; }
 .stat-number { font-variant-numeric: tabular-nums; }
 .grid-pattern { background-image: radial-gradient(circle, rgba(0,229,255,0.04) 1px, transparent 1px); background-size: 24px 24px; }
@@ -184,7 +185,114 @@ header, main, footer { position: relative; z-index: 1; }
   #mouseGlow { display: none; }
   body::after { display: none; }
   .reveal { transform: translateY(20px); }
+  .win-titlebar { padding: 8px 12px; }
+  .win-dot { width: 8px; height: 8px; }
 }
+
+/* ========== 程序窗口风格 (Hermes Agent 启发) ========== */
+.prog-window {
+  background: #0C1220;
+  border: 3px double rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  transition: border-color 0.35s ease;
+}
+.prog-window:hover {
+  border-color: rgba(255,255,255,0.16);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.55);
+}
+/* 不同色系双层边框高亮 */
+.prog-window.win-cyan  { border-color: rgba(0,229,255,0.1); }
+.prog-window.win-cyan:hover  { border-color: rgba(0,229,255,0.22); }
+.prog-window.win-purple{ border-color: rgba(184,71,255,0.1); }
+.prog-window.win-purple:hover{ border-color: rgba(184,71,255,0.22); }
+.prog-window.win-green { border-color: rgba(0,255,136,0.1); }
+.prog-window.win-green:hover { border-color: rgba(0,255,136,0.22); }
+.prog-window.win-rose  { border-color: rgba(255,45,120,0.1); }
+.prog-window.win-rose:hover  { border-color: rgba(255,45,120,0.22); }
+.prog-window.win-gold  { border-color: rgba(255,184,0,0.1); }
+.prog-window.win-gold:hover  { border-color: rgba(255,184,0,0.22); }
+
+/* 统计卡片保留简洁 */
+.stat-card {
+  background: #0C1220;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.stat-card:hover { border-color: rgba(0,229,255,0.2); }
+
+/* 窗口标题栏 */
+.win-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.012);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.win-dots { display: flex; gap: 5px; flex-shrink: 0; }
+.win-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transition: background 0.2s;
+}
+.prog-window:hover .win-dot { background: rgba(255,255,255,0.7); }
+/* 不同透明度模拟 Hermes Agent 窗口控件 */
+.win-dot.d1 { background: rgba(255,255,255,0.55); }
+.win-dot.d2 { background: rgba(255,255,255,0.3); }
+.win-dot.d3 { background: rgba(255,255,255,0.15); }
+
+.win-title {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 100%; opacity: 0.55;
+}
+
+/* 窗口内容区边距调整 */
+.prog-window > .p-7, .prog-window > .p-6, .prog-window > .p-5,
+.prog-window > .p-8, .prog-window > .p-4 { padding: 14px 16px; }
+.prog-window .card-hover {
+  background: #0A0E16;
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 6px;
+}
+
+/* 代码块风格（用于 technical 内容）*/
+.code-block {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.6);
+}
+
+/* 闪烁终端光标 */
+.cursor-blink {
+  display: inline-block; width: 8px; height: 1.1em;
+  background: rgba(255,255,255,0.5);
+  margin-left: 2px; margin-bottom: -2px;
+  animation: cursorFlash 0.9s step-end infinite;
+}
+@keyframes cursorFlash { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* 用 border-current 的细边框元素 */
+.border-subtle { border: 1px solid rgba(255,255,255,0.06); }
+.border-subtle-top { border-top: 1px solid rgba(255,255,255,0.04); }
+.border-subtle-bottom { border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+/* mix-blend-mode 高亮文字 */
+.highlight { mix-blend-mode: plus-lighter; }
 </style>
 </head>
 <body>
@@ -1164,7 +1272,60 @@ header, main, footer { position: relative; z-index: 1; }
     }, maxDelay * 1000 + 300);
   }
 
+  // ========== 9. 程序窗口化 ==========
+  function setupProgramWindows() {
+    // 统计数字卡片 → stat-card 简洁风格
+    document.querySelectorAll('.stat-number').forEach(function(el) {
+      var card = el.closest('.bg-card, .card-hover');
+      if (card && !card.classList.contains('prog-window') && !card.classList.contains('stat-card')) {
+        card.classList.add('stat-card');
+      }
+    });
+
+    // 所有 card-hover 和 bg-card → prog-window
+    document.querySelectorAll('.card-hover, .bg-card').forEach(function(card) {
+      if (card.classList.contains('stat-card')) return;
+      if (card.classList.contains('prog-window')) return;
+      if (card.closest('nav') || card.closest('footer')) return;
+      if (card.querySelector('.win-titlebar')) return;
+
+      // 推断标题
+      var heading = card.querySelector('h1, h2, h3, h4, .font-bold, [class*="font-extrabold"]');
+      var title = heading ? heading.textContent.trim().slice(0, 28) : '';
+      if (!title) {
+        var sec = card.closest('section');
+        if (sec) {
+          var h2 = sec.querySelector('h2');
+          if (h2) title = h2.textContent.trim();
+        }
+      }
+      if (!title) title = '~';
+
+      // 推断色系
+      var winClass = 'win-cyan';
+      if (card.querySelector('.text-accent, .bg-accent\\/10, [class*="accent"]')) winClass = 'win-purple';
+      else if (card.querySelector('.text-teal, .bg-teal\\/10')) winClass = 'win-green';
+      else if (card.querySelector('.text-rose, .bg-rose\\/10')) winClass = 'win-rose';
+      else if (card.querySelector('.text-gold, .bg-gold\\/10')) winClass = 'win-gold';
+
+      // 创建标题栏
+      var tb = document.createElement('div');
+      tb.className = 'win-titlebar';
+      tb.innerHTML = '<span class="win-dots"><span class="win-dot d1"></span><span class="win-dot d2"></span><span class="win-dot d3"></span></span><span class="win-title">' + title + '</span>';
+      card.insertBefore(tb, card.firstChild);
+      card.classList.add('prog-window', winClass);
+    });
+  }
+
+  // ========== 10. Section Badge 闪烁光标 ==========
+  document.querySelectorAll('.section-badge').forEach(function(badge) {
+    var cursor = document.createElement('span');
+    cursor.className = 'cursor-blink';
+    badge.appendChild(cursor);
+  });
+
   // ========== 启动所有效果 ==========
+  setupProgramWindows();
   setupReveal();
   setupCountUp();
   setupTilt();
