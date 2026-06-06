@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王子彦 — 游戏策划 / 测试</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        lime: '#D6FF3D',
+        ink:  '#0A0A0A',
+        bone: '#ECE9DD',
+      }
+    }
+  }
+}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root { --lime:#D6FF3D; --ink:#0A0A0A; --bone:#ECE9DD; }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: var(--lime);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== 字体角色 ===== */
+.font-display { font-family: 'Anton', 'Arial Narrow', "Microsoft YaHei", sans-serif; font-weight: 400; letter-spacing: 0.01em; }
+.font-serif   { font-family: 'Instrument Serif', Georgia, "Songti SC", serif; }
+.font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.font-grotesk { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+/* ===== 表面（双色平涂 + 中性过渡）===== */
+.s-lime { background: var(--lime); color: var(--ink); }
+.s-ink  { background: var(--ink);  color: var(--bone); }
+.s-bone { background: var(--bone); color: var(--ink); }
+.s-ink .hl  { color: var(--lime); }
+.s-lime .hl, .s-bone .hl { color: var(--ink); }
+
+/* 规则线用 currentColor 自适应明暗 */
+.rule  { border-color: currentColor; }
+.box   { border: 1px solid currentColor; }
+
+/* ===== 等宽小标签 ===== */
+.label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+.idx   { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.12em; }
+
+/* ===== 超大显示字 ===== */
+.giant { font-family: 'Anton', 'Arial Narrow', sans-serif; line-height: 0.86; letter-spacing: -0.01em; text-transform: uppercase; }
+
+/* 标题遮罩 */
+.mask { overflow: hidden; display: block; }
+.mask > span { display: inline-block; will-change: transform; }
+
+/* ===== 跑马灯 ===== */
+.marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid currentColor; border-bottom: 1px solid currentColor; }
+.marquee__track { display: inline-block; animation: marq 26s linear infinite; }
+.marquee__track > span { padding: 0 0.4em; }
+@keyframes marq { to { transform: translateX(-50%); } }
+
+/* ===== 二进制细条 ===== */
+.binary { overflow: hidden; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px; opacity: 0.32; padding: 7px 0; user-select: none; }
+.binary > span { display: inline-block; animation: marq 60s linear infinite; }
+
+/* ===== 作品字母墙 ===== */
+.letterwall { position: relative; }
+.lw-rows { display: flex; flex-direction: column; }
+.lw-row {
+  font-family: 'Anton', 'Arial Narrow', sans-serif;
+  line-height: 0.8; text-transform: uppercase; white-space: nowrap;
+  display: flex; gap: 0.1em; color: var(--lime);
+  font-size: clamp(3.2rem, 13vw, 12rem);
+  will-change: transform; padding: 0.01em 0;
+}
+.lw-row > span { display: inline-block; will-change: transform; }
+
+/* ===== Steam 下拉标签 ===== */
+#steamTab { position: fixed; top: 56px; right: clamp(12px, 4vw, 40px); z-index: 50; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--lime); }
+.steam-string { width: 2px; height: 40px; background: var(--lime); transition: height .4s cubic-bezier(.16,1,.3,1); }
+.steam-box {
+  width: 52px; height: 52px; background: var(--ink); border: 1.5px solid var(--lime); color: var(--lime);
+  display: grid; place-items: center; transform-origin: 50% -40px;
+  animation: steamSwing 4.5s ease-in-out infinite; transition: transform .3s;
+}
+.steam-box svg { width: 26px; height: 26px; fill: currentColor; display: block; transition: transform .3s; }
+.steam-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .14em; margin-top: 6px; padding: 2px 6px; background: var(--lime); color: var(--ink); opacity: 0; transform: translateY(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
+#steamTab:hover .steam-string { height: 70px; }
+#steamTab:hover .steam-box svg { transform: scale(1.12); }
+#steamTab:hover .steam-label { opacity: 1; transform: translateY(0); }
+@keyframes steamSwing { 0%,100% { transform: rotate(-3.5deg); } 50% { transform: rotate(3.5deg); } }
+@media (max-width: 768px) {
+  #steamTab { top: 52px; right: 10px; }
+  .steam-box { width: 44px; height: 44px; }
+  .steam-box svg { width: 22px; height: 22px; }
+}
+
+/* ===== 像素爆裂块 ===== */
+.pixel { position: fixed; z-index: 9990; pointer-events: none; will-change: transform, opacity; }
+.rv { will-change: transform; }
+
+/* ===== Hero 波纹画布 ===== */
+#heroLines { display: block; width: 100%; height: 100%; position: absolute; inset: 0; z-index: 0; }
+
+/* ===== 链接下划线动效 ===== */
+.lnk { position: relative; }
+.lnk::after { content: ''; position: absolute; left: 0; bottom: -2px; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+.lnk:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* ===== 顶部进度条 ===== */
+#scrollProgress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9995; background: var(--ink); }
+
+/* ===== 自定义光标（白 + 差值混合，黑/绿底都可见）===== */
+body { cursor: none; }
+a, button, [data-hover] { cursor: none; }
+#curDot, #curRing { position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; border-radius: 50%; }
+#curDot  { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: #fff; }
+#curRing { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid #fff; transition: width .25s, height .25s, margin .25s; }
+#curRing.on { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+
+/* 反馈条 */
+.bar-track { height: 8px; border: 1px solid currentColor; }
+.bar-fill  { height: 100%; background: currentColor; }
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--lime); }
+
+/* 移动端 */
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  a, button, [data-hover] { cursor: pointer; }
+  #curDot, #curRing { display: none; }
+}
+
+/* 入场初始态（GSAP 接管；JS 缺失时 noscript / fallback 兜底）*/
+.rv { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div id="scrollProgress"></div>
+<div id="curDot"></div>
+<div id="curRing"></div>
+
+<!-- Steam 下拉标签 -->
+<a id="steamTab" href="https://steamcommunity.com/id/piperange/" target="_blank" rel="noopener" title="查看我的 Steam 个人资料" data-hover>
+  <span class="steam-string"></span>
+  <span class="steam-box">
+    <svg viewBox="0 0 24 24" aria-label="Steam" role="img"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>
+  </span>
+  <span class="steam-label">STEAM ↗</span>
+</a>
+
+<!-- ===================== 顶部状态栏 ===================== -->
+<header class="s-lime border-b rule sticky top-0 z-40 backdrop-blur-0" style="background:var(--lime);">
+  <div class="grid grid-cols-12 items-stretch">
+    <!-- 标识 -->
+    <a href="#top" class="col-span-3 md:col-span-2 border-r rule flex items-center gap-3 px-4 py-3" data-hover>
+      <span class="font-display text-2xl leading-none">WZY</span>
+    </a>
+    <!-- 状态行 -->
+    <div class="hidden md:flex col-span-4 border-r rule flex-col justify-center px-4 py-2 label leading-relaxed">
+      <span>STATUS // OPEN TO WORK · 2027</span>
+      <span>ROLE // GAME TESTER · QA / LEVEL · SYSTEMS</span>
+    </div>
+    <!-- 导航 -->
+    <nav class="col-span-6 md:col-span-4 border-r rule flex items-center justify-around md:justify-center md:gap-10 px-2 label">
+      <a href="#core" class="lnk" data-hover>ABOUT</a>
+      <a href="#achv" class="lnk" data-hover>GAMES</a>
+      <a href="#work" class="lnk" data-hover>WORK</a>
+      <a href="#contact" class="lnk" data-hover>CONTACT</a>
+    </nav>
+    <!-- 招聘标语 -->
+    <div class="col-span-3 md:col-span-2 flex items-center justify-end px-4 py-2 text-right">
+      <span class="font-serif italic text-lg md:text-xl leading-tight">Available for<br>2027 intern</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section id="top" class="s-lime relative overflow-hidden border-b rule" style="min-height: calc(100vh - 56px);">
+  <canvas id="heroLines"></canvas>
+
+  <div class="relative z-10 flex flex-col" style="min-height: calc(100vh - 56px);">
+    <!-- 上部信息 -->
+    <div class="grid md:grid-cols-12 gap-6 px-4 md:px-8 pt-10 md:pt-16 items-start">
+      <div class="md:col-span-7">
+        <div class="label mb-4">王子彦 · WANG ZIYAN — 兰州交通大学 · 机械工程硕士 (2027.06)</div>
+        <p class="font-serif text-2xl md:text-4xl leading-snug max-w-2xl">
+          一个把<span class="italic">「玩透」</span>当方法论的人——<br>
+          用数理建模的严谨，做游戏的<span class="italic">测试</span>与<span class="italic">设计</span>。
+        </p>
+      </div>
+      <div class="md:col-span-5 md:text-right flex md:justify-end items-start">
+        <div class="font-mono text-xs leading-relaxed opacity-70 max-w-xs">
+          <span id="bootline">> INITIALIZING PORTFOLIO…</span><br>
+          > STEAM LIBRARY: 1200+ TITLES<br>
+          > PLATFORMS: PC / CONSOLE / MOBILE<br>
+          > FOCUS: FPS · RTS · ROGUELIKE
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1"></div>
+
+    <!-- 二进制细条 -->
+    <div class="binary border-t rule px-4"><span id="binStrip"></span></div>
+
+    <!-- 巨型主词 -->
+    <div class="px-2 md:px-6 pb-6 md:pb-10">
+      <h1 class="giant text-ink select-none" style="font-size: clamp(3rem, 13vw, 12rem);">
+        <span class="mask"><span class="hw">PLAY</span></span>
+        <span class="mask"><span class="hw">TEST <span style="font-family:'Inter';font-weight:800;">✦</span> BUILD</span></span>
+      </h1>
+    </div>
+  </div>
+</section>
+
+<!-- 跑马灯 -->
+<div class="s-ink marquee py-3 md:py-4">
+  <div class="marquee__track giant" style="font-size: clamp(1.4rem, 3.4vw, 3rem);">
+    <span class="hl">会玩</span><span>·</span><span class="hl">会测</span><span>·</span><span class="hl">会做</span><span>—</span><span>FUNCTIONAL TESTING</span><span>·</span><span>BUG REPRO</span><span>·</span><span>LEVEL DESIGN</span><span>·</span><span>SYSTEMS</span><span>·</span><span>BALANCING</span><span>—</span><span class="hl">会玩</span><span>·</span><span class="hl">会测</span><span>·</span><span class="hl">会做</span><span>—</span><span>FUNCTIONAL TESTING</span><span>·</span><span>BUG REPRO</span><span>·</span><span>LEVEL DESIGN</span><span>·</span><span>SYSTEMS</span><span>·</span><span>BALANCING</span><span>—</span>
+  </div>
+</div>
+
+<!-- ===================== (01) 核心竞争力 ===================== -->
+<section id="core" class="s-ink border-b rule">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>核心竞争力</span></h2>
+    <span class="idx">(01) — CORE COMPETENCE</span>
+  </div>
+  <div class="grid md:grid-cols-3">
+    <article class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="font-display text-5xl hl mb-4">01</div>
+      <h3 class="font-grotesk text-xl font-bold mb-3">数理建模思维</h3>
+      <p class="text-sm leading-relaxed opacity-80">硕士课题为复杂系统动力学<span class="hl">建模与仿真</span>，擅长把模糊的交互关系抽象为可量化、可调参的数值模型——与游戏经济系统、战斗数值平衡、成长曲线规划的核心方法论高度一致。</p>
+    </article>
+    <article class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="font-display text-5xl hl mb-4">02</div>
+      <h3 class="font-grotesk text-xl font-bold mb-3">竞技级游戏理解</h3>
+      <p class="text-sm leading-relaxed opacity-80">Steam 1200+ 游戏库 + RTS 品类<span class="hl">世界级竞技成就</span>，对机制的拆解来自顶级对决中的压力测试——清楚一个数值设计在高端对局里如何被放大或解构。</p>
+    </article>
+    <article class="rv p-6 md:p-8">
+      <div class="font-display text-5xl hl mb-4">03</div>
+      <h3 class="font-grotesk text-xl font-bold mb-3">技术落地能力</h3>
+      <p class="text-sm leading-relaxed opacity-80">MATLAB 数值仿真 + Unity3D 交互原型 + C 语言编程，能把设计思路<span class="hl">快速验证为可玩原型</span>，也能把测试流程写成可复用的工具——是可运行的工程代码，不是纸上谈兵。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== (02) 游戏成就 ===================== -->
+<section id="achv" class="s-lime border-b rule">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>游戏成就</span></h2>
+    <span class="idx">(02) — GAME ACHIEVEMENTS</span>
+  </div>
+
+  <!-- 数据条 -->
+  <div class="grid grid-cols-2 md:grid-cols-4 border-b rule">
+    <div class="rv p-6 border-r border-b md:border-b-0 rule">
+      <div class="giant" style="font-size: clamp(2.5rem,6vw,5rem);"><span class="stat-number">1200</span>+</div>
+      <div class="label mt-1">Steam 游戏库</div>
+    </div>
+    <div class="rv p-6 md:border-r border-b md:border-b-0 rule">
+      <div class="giant" style="font-size: clamp(2.5rem,6vw,5rem);">Top20</div>
+      <div class="label mt-1">Stormgate 世界排行</div>
+    </div>
+    <div class="rv p-6 border-r rule">
+      <div class="giant" style="font-size: clamp(2.5rem,6vw,5rem);"><span class="stat-number">4</span>项</div>
+      <div class="label mt-1">省部级竞赛奖项</div>
+    </div>
+    <div class="rv p-6">
+      <div class="giant" style="font-size: clamp(2.5rem,6vw,5rem);"><span class="stat-number">3</span>端</div>
+      <div class="label mt-1">PC · 主机 · 手游</div>
+    </div>
+  </div>
+
+  <!-- 竞技排名 -->
+  <div class="px-4 md:px-8 pt-6 label">▍竞技排名 / COMPETITIVE RANK</div>
+  <div class="grid md:grid-cols-3 border-b rule">
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="font-display text-4xl mb-1">TOP 20</div>
+      <div class="font-grotesk font-bold">风暴崛起 Stormgate</div>
+      <p class="text-sm opacity-70 mt-1">DYN 阵营 · 世界 1v1 排行榜 · RTS 新作</p>
+    </div>
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="font-display text-4xl mb-1">大师 / MASTER</div>
+      <div class="font-grotesk font-bold">星际争霸 2</div>
+      <p class="text-sm opacity-70 mt-1">星灵族 · 多赛季 · 国服天梯 · RTS 标杆</p>
+    </div>
+    <div class="rv p-6 md:p-8">
+      <div class="font-display text-4xl mb-1">传说 / LEGEND</div>
+      <div class="font-grotesk font-bold">炉石传说</div>
+      <p class="text-sm opacity-70 mt-1">天梯顶尖 · 多赛季 · 卡牌策略品类</p>
+    </div>
+  </div>
+
+  <!-- 内测与深度 -->
+  <div class="px-4 md:px-8 pt-6 label">▍内测与深度体验 / BETA · DEPTH</div>
+  <div class="grid md:grid-cols-3">
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <h3 class="font-grotesk font-bold mb-2">厂商内测邀约</h3>
+      <p class="text-sm opacity-75 leading-relaxed">V 社《Deadlock》首批内测、Embark《ARC Raiders》首批内测，以及多个现象级作品的内部测试资格——被开发者视为有价值的反馈来源，熟悉「测试者→开发团队」的反馈闭环。</p>
+    </div>
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <h3 class="font-grotesk font-bold mb-2">白金全成就</h3>
+      <p class="text-sm opacity-75 leading-relaxed">主机平台多款游戏达成白金奖杯，每款都深入到足以察觉浅层体验无法暴露的平衡性问题与隐蔽设计缺陷——这正是穷尽式测试的习惯。</p>
+    </div>
+    <div class="rv p-6 md:p-8">
+      <h3 class="font-grotesk font-bold mb-2">全平台深潜</h3>
+      <p class="text-sm opacity-75 leading-relaxed">PC + 主机 + 手游三端均有大量深入游玩记录，理解不同平台用户的操作惯性、付费心理与社交行为差异——不是只看，是真玩。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== (03) 游戏理解 ===================== -->
+<section id="insight" class="s-bone border-b rule">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>游戏理解</span></h2>
+    <span class="idx">(03) — GAME UNDERSTANDING</span>
+  </div>
+
+  <!-- FPS 专精 -->
+  <div class="px-4 md:px-8 pt-6 label">▍FPS 专精 / FPS EXPERTISE</div>
+  <p class="px-4 md:px-8 pt-3 pb-1 text-sm opacity-80 max-w-3xl">全平台 FPS 资深玩家，对<strong>枪感、命中判定、地图引导与战斗节奏</strong>有第一手敏感度——这正是 FPS 功能性测试最看重的维度；并能长时间在三维 FPS 场景中游玩而无明显眩晕或不适。</p>
+  <div class="grid grid-cols-2 md:grid-cols-3 border-b rule mt-4">
+    <div class="rv p-5 md:p-6 border-b md:border-r rule">
+      <div class="font-grotesk font-bold">使命召唤 / Call of Duty</div>
+      <div class="label mt-2">全系列 · 长期追随</div>
+    </div>
+    <div class="rv p-5 md:p-6 border-b md:border-r rule">
+      <div class="font-grotesk font-bold">光环 / Halo</div>
+      <div class="label mt-2">全系列 · 主机/PC 经典</div>
+    </div>
+    <div class="rv p-5 md:p-6 border-b rule">
+      <div class="font-grotesk font-bold">孤岛惊魂 / Far Cry</div>
+      <div class="label mt-2">全系列 · 开放世界 FPS</div>
+    </div>
+    <div class="rv p-5 md:p-6 border-b md:border-b-0 md:border-r rule">
+      <div class="font-grotesk font-bold">CS:GO</div>
+      <div class="label mt-2">A+ 段位 · 顶级竞技</div>
+    </div>
+    <div class="rv p-5 md:p-6 border-b md:border-b-0 md:border-r rule">
+      <div class="font-grotesk font-bold">Apex 英雄</div>
+      <div class="label mt-2">单赛季猎杀 / MASTER</div>
+    </div>
+    <div class="rv p-5 md:p-6">
+      <div class="font-grotesk font-bold">Deadlock</div>
+      <div class="label mt-2">Eternus · 最高段位 · 封测玩家</div>
+    </div>
+  </div>
+
+  <div class="px-4 md:px-8 pt-6 label">▍测试者视角 / TESTER&rsquo;S LENS</div>
+  <div class="grid md:grid-cols-2 border-b rule">
+    <div class="rv p-6 md:p-8 border-b md:border-r rule">
+      <div class="flex items-baseline gap-3 mb-2"><span class="font-mono text-sm opacity-50">A1</span><h3 class="font-grotesk text-lg font-bold">边缘思维</h3></div>
+      <p class="text-sm opacity-75 leading-relaxed">习惯往机制与地图的"边界"上走——墙角、碰撞体、极限连招、非常规路径。Bug 往往就藏在普通玩法到不了的地方，而我靠白金全成就式的穷尽游玩反复触及它们。</p>
+    </div>
+    <div class="rv p-6 md:p-8 border-b rule">
+      <div class="flex items-baseline gap-3 mb-2"><span class="font-mono text-sm opacity-50">A2</span><h3 class="font-grotesk text-lg font-bold">手感与节奏的微观敏感</h3></div>
+      <p class="text-sm opacity-75 leading-relaxed">对帧级前后摇、命中判定、TTK、移动惯性的细微异常高度敏感——这种"哪里不对劲"的直觉，来自长期高分段 FPS / RTS 竞技实战。</p>
+    </div>
+    <div class="rv p-6 md:p-8 md:border-r rule">
+      <div class="flex items-baseline gap-3 mb-2"><span class="font-mono text-sm opacity-50">A3</span><h3 class="font-grotesk text-lg font-bold">可复现的因果链</h3></div>
+      <p class="text-sm opacity-75 leading-relaxed">不满足于"撞见一个 Bug"。研究训练让我习惯定位触发条件、构建稳定的复现步骤，并完整记录环境信息——让开发者能照着一步步重现。</p>
+    </div>
+    <div class="rv p-6 md:p-8">
+      <div class="flex items-baseline gap-3 mb-2"><span class="font-mono text-sm opacity-50">A4</span><h3 class="font-grotesk text-lg font-bold">用数值，而非感觉</h3></div>
+      <p class="text-sm opacity-75 leading-relaxed">拆解一款游戏从枪械、技能、经济的数值出发，用数据描述问题，而不是"感觉不平衡"——这也是我 Steam 评测一贯的视角。</p>
+    </div>
+  </div>
+  <div class="px-4 md:px-8 pt-6 label">▍社区贡献</div>
+  <div class="grid md:grid-cols-2">
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <h3 class="font-grotesk font-bold mb-2">Steam 游戏评测</h3>
+      <p class="text-sm opacity-75 leading-relaxed">累计发表大量评测，获多篇社区「有价值」标记；内容侧重机制拆解与数值分析，而非感性评价。</p>
+    </div>
+    <div class="rv p-6 md:p-8">
+      <h3 class="font-grotesk font-bold mb-2">独立游戏汉化</h3>
+      <p class="text-sm opacity-75 leading-relaxed">参与 indie 游戏本地化，对文本溢出、错位、错别字与语境错误高度敏感，并能记录其位置与复现条件（LQA 视角）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 作品字母墙 ===================== -->
+<section id="work" class="s-ink border-b rule overflow-hidden letterwall" data-word="WORK">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <span class="idx">// SELECTED WORK</span>
+    <span class="label">向下查看项目 ↓</span>
+  </div>
+  <div class="lw-rows py-8 md:py-14"></div>
+</section>
+
+<!-- ===================== (04) 项目经历 ===================== -->
+<section id="project" class="s-lime border-b rule">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>项目经历</span></h2>
+    <span class="idx">(04) — PROJECT</span>
+  </div>
+  <div class="px-4 md:px-8 py-6 border-b rule flex flex-wrap items-baseline justify-between gap-2">
+    <h3 class="font-grotesk text-2xl font-bold">数字孪生六轴机械臂管控系统</h3>
+    <span class="label">第十五届挑战杯 · 甘肃省三等奖</span>
+  </div>
+  <p class="px-4 md:px-8 py-5 border-b rule text-sm opacity-80 max-w-3xl">与合作者共同设计并制作了一款六轴机械臂，基于数字孪生技术构建了虚实映射的智能管控系统。</p>
+  <div class="grid md:grid-cols-3">
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="label mb-2">01 / 三维可视化</div>
+      <p class="text-sm opacity-80 leading-relaxed">使用 Unity3D 构建机器人虚拟仿真环境，实现模型渲染、场景漫游、运动仿真与虚实同步交互。</p>
+    </div>
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule">
+      <div class="label mb-2">02 / 运动学建模</div>
+      <p class="text-sm opacity-80 leading-relaxed">采用 D-H 法则建立六轴机器人运动学模型，完成正逆运动学求解，实现路径规划与碰撞检测。</p>
+    </div>
+    <div class="rv p-6 md:p-8">
+      <div class="label mb-2">03 / 数据驱动</div>
+      <p class="text-sm opacity-80 leading-relaxed">通过 NB-IoT 模块采集传感器数据，建立健康参数表，以定量化分析实现异常状态检测。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== (05) 竞赛奖项 ===================== -->
+<section class="s-ink border-b rule" data-anim="left">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>竞赛奖项</span></h2>
+    <span class="idx">(05) — AWARDS</span>
+  </div>
+  <div class="divide-y" style="border-color:currentColor;">
+    <div class="rv flex flex-wrap items-center justify-between gap-3 px-4 md:px-8 py-5 border-b rule">
+      <div><span class="font-mono text-sm opacity-50 mr-3">2028</span><span class="font-grotesk font-bold">第二十八届中国机器人及人工智能大赛</span><span class="text-sm opacity-60 ml-3">省部级</span></div>
+      <span class="label hl">一等奖 · 已推荐国赛</span>
+    </div>
+    <div class="rv flex flex-wrap items-center justify-between gap-3 px-4 md:px-8 py-5 border-b rule">
+      <div><span class="font-mono text-sm opacity-50 mr-3">2024</span><span class="font-grotesk font-bold">第二十四届全国大学生机器人大赛</span><span class="text-sm opacity-60 ml-3">省部级</span></div>
+      <span class="label hl">一等奖 · 两个项目</span>
+    </div>
+    <div class="rv flex flex-wrap items-center justify-between gap-3 px-4 md:px-8 py-5 border-b rule">
+      <div><span class="font-mono text-sm opacity-50 mr-3">2015</span><span class="font-grotesk font-bold">第十五届挑战杯</span><span class="text-sm opacity-60 ml-3">省部级</span></div>
+      <span class="label">三等奖</span>
+    </div>
+    <div class="rv flex flex-wrap items-center justify-between gap-3 px-4 md:px-8 py-5">
+      <div><span class="font-mono text-sm opacity-50 mr-3">2025</span><span class="font-grotesk font-bold">2025 中国国际大学生创新大赛</span><span class="text-sm opacity-60 ml-3">省部级</span></div>
+      <span class="label">三等奖</span>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 border-t rule">
+    <div class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule text-sm opacity-80">
+      <span class="hl font-grotesk font-bold">机器人控制逻辑设计</span> → 游戏实时交互系统的规则定义与状态机设计
+    </div>
+    <div class="rv p-6 md:p-8 text-sm opacity-80">
+      <span class="hl font-grotesk font-bold">AI 算法优化</span> → NPC 行为树、难度自适应调节
+    </div>
+  </div>
+</section>
+
+<!-- ===================== (06) 教育经历 ===================== -->
+<section class="s-lime border-b rule">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>教育经历</span></h2>
+    <span class="idx">(06) — EDUCATION</span>
+  </div>
+  <div class="px-4 md:px-8 py-6 border-b rule flex flex-wrap items-baseline justify-between gap-2">
+    <h3 class="font-grotesk text-2xl font-bold">兰州交通大学 · 机械工程 · 硕士</h3>
+    <span class="label">2025–2026 学业奖学金一等奖</span>
+  </div>
+  <p class="px-4 md:px-8 py-5 border-b rule text-sm opacity-80 max-w-3xl">
+    课题方向：齿轮传动系统动力学分析 / 故障识别诊断。构建多自由度齿轮系统动力学方程，通过 MATLAB 数值仿真模拟不同工况下的系统响应；开发基于振动信号特征提取的故障分类算法，完成多种故障模式的自动识别；使用 Unity3D 搭建齿轮传动系统可视化仿真平台。
+  </p>
+  <div class="px-4 md:px-8 pt-6 label">▍研究能力 → 游戏开发 / 测试迁移</div>
+  <div class="grid md:grid-cols-2">
+    <div class="rv p-6 md:p-8 border-b md:border-r rule text-sm"><span class="font-grotesk font-bold">系统动力学方程建立</span><div class="opacity-70 mt-1">→ 游戏经济 / 战斗系统的数学模型搭建</div></div>
+    <div class="rv p-6 md:p-8 border-b rule text-sm"><span class="font-grotesk font-bold">多参数仿真与敏感性分析</span><div class="opacity-70 mt-1">→ 数值平衡调优：改一个参数，观察整体系统行为</div></div>
+    <div class="rv p-6 md:p-8 md:border-r rule text-sm"><span class="font-grotesk font-bold">模式识别与分类</span><div class="opacity-70 mt-1">→ 玩家行为聚类分析、反作弊检测逻辑</div></div>
+    <div class="rv p-6 md:p-8 text-sm"><span class="font-grotesk font-bold">Unity3D 交互系统开发</span><div class="opacity-70 mt-1">→ 玩法原型搭建、缺陷复现与回归验证</div></div>
+  </div>
+</section>
+
+<!-- ===================== 宣言横幅 ===================== -->
+<section class="s-ink border-b rule px-4 md:px-8 py-16 md:py-28">
+  <p class="label mb-6">// MANIFESTO</p>
+  <blockquote id="manifesto" class="font-serif text-3xl md:text-5xl lg:text-6xl leading-tight max-w-5xl">
+    「把每一个边缘情况都玩到出 Bug，<span class="hl italic">是我对一款游戏最大的尊重。</span>」
+  </blockquote>
+  <div class="binary border-t rule mt-10"><span id="binStrip2"></span></div>
+</section>
+
+<!-- ===================== (07) 技能 ===================== -->
+<section class="s-bone border-b rule" data-anim="left">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>技能</span></h2>
+    <span class="idx">(07) — SKILLS</span>
+  </div>
+  <div>
+    <div class="rv grid grid-cols-12 items-center gap-3 md:gap-5 px-4 md:px-8 py-6 border-b rule">
+      <div class="col-span-12 md:col-span-3 font-display text-3xl md:text-4xl leading-none">数值与仿真</div>
+      <div class="col-span-7 md:col-span-5 text-sm opacity-70">MATLAB —— 动力学建模、参数敏感性分析、数据可视化</div>
+      <div class="col-span-4 md:col-span-3"><div class="bar-track"><div class="bar-fill" data-w="88" style="width:0"></div></div></div>
+      <div class="col-span-1 font-mono text-sm text-right">88</div>
+    </div>
+    <div class="rv grid grid-cols-12 items-center gap-3 md:gap-5 px-4 md:px-8 py-6 border-b rule">
+      <div class="col-span-12 md:col-span-3 font-display text-3xl md:text-4xl leading-none">编程</div>
+      <div class="col-span-7 md:col-span-5 text-sm opacity-70">C 语言、Unity3D（C#）</div>
+      <div class="col-span-4 md:col-span-3"><div class="bar-track"><div class="bar-fill" data-w="75" style="width:0"></div></div></div>
+      <div class="col-span-1 font-mono text-sm text-right">75</div>
+    </div>
+    <div class="rv grid grid-cols-12 items-center gap-3 md:gap-5 px-4 md:px-8 py-6 border-b rule">
+      <div class="col-span-12 md:col-span-3 font-display text-3xl md:text-4xl leading-none">AI 工具</div>
+      <div class="col-span-7 md:col-span-5 text-sm opacity-70">Claude Code、Cursor、Codex、HermesAI —— 精通 Prompt Engineering 与 Agent Skill 编写，把重复性工作（数据整理、文档生成、代码框架）高效自动化。</div>
+      <div class="col-span-4 md:col-span-3"><div class="bar-track"><div class="bar-fill" data-w="92" style="width:0"></div></div></div>
+      <div class="col-span-1 font-mono text-sm text-right">92</div>
+    </div>
+    <div class="rv grid grid-cols-12 items-center gap-3 md:gap-5 px-4 md:px-8 py-6">
+      <div class="col-span-12 md:col-span-3 font-display text-3xl md:text-4xl leading-none">语言</div>
+      <div class="col-span-7 md:col-span-5 text-sm opacity-70">CET-4 / CET-6，英文游戏、文献及开发者博客无障碍阅读</div>
+      <div class="col-span-4 md:col-span-3"><div class="bar-track"><div class="bar-fill" data-w="82" style="width:0"></div></div></div>
+      <div class="col-span-1 font-mono text-sm text-right">82</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== (08) 个人特质 ===================== -->
+<section class="s-lime border-b rule" data-anim="right">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <h2 class="giant mask" style="font-size: clamp(2rem,6vw,5rem);"><span>个人特质</span></h2>
+    <span class="idx">(08) — TRAITS</span>
+  </div>
+  <div>
+    <div class="rv grid md:grid-cols-12 gap-4 items-center px-4 md:px-8 py-8 md:py-10 border-b rule">
+      <div class="md:col-span-1 font-mono text-sm opacity-50">01</div>
+      <div class="md:col-span-5 font-display text-5xl md:text-7xl leading-none">系统思维</div>
+      <p class="md:col-span-6 font-serif text-xl md:text-2xl opacity-80 leading-snug">面对复杂问题，直觉是找出核心变量和它们之间的反馈回路——无论是齿轮传动方程，还是游戏经济循环。</p>
+    </div>
+    <div class="rv grid md:grid-cols-12 gap-4 items-center px-4 md:px-8 py-8 md:py-10 border-b rule">
+      <div class="md:col-span-1 font-mono text-sm opacity-50">02</div>
+      <div class="md:col-span-5 font-display text-5xl md:text-7xl leading-none">数据 × 直觉</div>
+      <p class="md:col-span-6 font-serif text-xl md:text-2xl opacity-80 leading-snug">相信数学模型的预测力，也尊重玩家社区的真实反馈——两者冲突时，先怀疑模型。</p>
+    </div>
+    <div class="rv grid md:grid-cols-12 gap-4 items-center px-4 md:px-8 py-8 md:py-10">
+      <div class="md:col-span-1 font-mono text-sm opacity-50">03</div>
+      <div class="md:col-span-5 font-display text-5xl md:text-7xl leading-none">强自驱</div>
+      <p class="md:col-span-6 font-serif text-xl md:text-2xl opacity-80 leading-snug">独立完成从理论建模 → 数值仿真 → Unity3D 可视化的完整研究链条，无需外部督促。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== (09) 联系 ===================== -->
+<section id="contact" class="s-ink">
+  <div class="flex items-baseline justify-between px-4 md:px-8 py-6 border-b rule">
+    <span class="idx">(09) — CONTACT</span>
+    <span class="label">求职意向 // 游戏策划 · 游戏测试（QA）</span>
+  </div>
+  <div class="px-4 md:px-8 py-10 md:py-20 border-b rule">
+    <p class="font-serif italic text-2xl md:text-3xl opacity-80 mb-4">Let&rsquo;s make games better, together.</p>
+    <h2 class="giant" style="font-size: clamp(2.5rem,9vw,8rem);">
+      <span class="mask"><span class="hw">让我们一起</span></span>
+      <span class="mask"><span class="hw hl">把游戏做得更好</span></span>
+    </h2>
+  </div>
+  <div class="grid md:grid-cols-3">
+    <a href="tel:15507538423" class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule group" data-hover>
+      <div class="label mb-2">TEL</div>
+      <div class="font-grotesk text-lg lnk inline-block">155 0753 8423</div>
+    </a>
+    <a href="mailto:17690282286@sina.cn" class="rv p-6 md:p-8 border-b md:border-b-0 md:border-r rule" data-hover>
+      <div class="label mb-2">EMAIL</div>
+      <div class="font-grotesk text-lg lnk inline-block">17690282286@sina.cn</div>
+    </a>
+    <a href="https://steamcommunity.com/id/piperange/" target="_blank" rel="noopener" class="rv p-6 md:p-8" data-hover>
+      <div class="label mb-2">STEAM</div>
+      <div class="font-grotesk text-lg lnk inline-block">steamcommunity.com/id/piperange ↗</div>
+    </a>
+  </div>
+  <footer class="border-t rule flex flex-wrap items-center justify-between gap-2 px-4 md:px-8 py-5 label">
+    <span>王子彦 · 兰州交通大学 · 机械工程硕士 · 求职游戏行业 · 2027 届应届生</span>
+    <span>PIPERANGE &copy; 2026</span>
+  </footer>
+</section>
+
+<script>
+(function () {
+  // ============ 0. Hero 生成式波纹线 ============
+  (function heroFlow() {
+    var c = document.getElementById('heroLines');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var host = c.parentElement;
+    var W = 0, H = 0, t = 0, mx = -9999, my = -9999;
+    function size() { W = c.width = host.clientWidth; H = c.height = host.clientHeight; }
+    size();
+    window.addEventListener('resize', size);
+    host.addEventListener('mousemove', function (e) {
+      var r = c.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top;
+    });
+    host.addEventListener('mouseleave', function () { mx = my = -9999; });
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(10,10,10,0.5)';
+      ctx.lineWidth = 1;
+      var gap = W < 640 ? 18 : 13;
+      var cols = Math.floor(W / gap) + 2;
+      for (var i = 0; i < cols; i++) {
+        var bx = i * gap;
+        ctx.beginPath();
+        for (var y = 0; y <= H; y += 9) {
+          var x = bx
+            + Math.sin(y * 0.011 + t * 0.6 + i * 0.16) * 11
+            + Math.sin(y * 0.045 + t * 0.4 + i * 0.05) * 5;
+          var dx = bx - mx, dy = y - my, d2 = dx * dx + dy * dy;
+          if (d2 < 20000) { var f = 1 - d2 / 20000; x += (dx / Math.sqrt(d2 + 1)) * f * 70; }
+          if (y === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      t += 0.015;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ============ 1. 自定义光标 ============
+  (function cursor() {
+    var dot = document.getElementById('curDot'), ring = document.getElementById('curRing');
+    if (!dot || window.matchMedia('(max-width:768px)').matches) return;
+    var x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
+    document.addEventListener('mousemove', function (e) { x = e.clientX; y = e.clientY; dot.style.left = x + 'px'; dot.style.top = y + 'px'; });
+    (function loop() { rx += (x - rx) * 0.2; ry += (y - ry) * 0.2; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a, button, [data-hover]').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { ring.classList.add('on'); });
+      el.addEventListener('mouseleave', function () { ring.classList.remove('on'); });
+    });
+  })();
+
+  // ============ 2. Hero 二进制条 ============
+  (function bin() {
+    var els = document.querySelectorAll('[id^="binStrip"]');
+    els.forEach(function (el) {
+      var s = '';
+      for (var i = 0; i < 240; i++) s += (Math.random() > 0.5 ? '1' : '0');
+      el.textContent = s + ' ' + s;
+    });
+  })();
+
+  // ============ 3. 启动文字打点 ============
+  (function boot() {
+    var el = document.getElementById('bootline');
+    if (!el) return;
+    var done = '> PORTFOLIO READY ✦';
+    setTimeout(function () { el.textContent = done; }, 1400);
+  })();
+
+  // ============ 3.4 Steam 标签下坠入场 ============
+  (function steamTab() {
+    var el = document.getElementById('steamTab');
+    if (!el) return;
+    if (typeof window.gsap !== 'undefined') {
+      gsap.from(el, { y: -140, autoAlpha: 0, duration: 1.15, ease: 'elastic.out(1, 0.55)', delay: 0.9 });
+    }
+  })();
+
+  // ============ 3.5 作品字母墙构建 ============
+  (function letterWall() {
+    document.querySelectorAll('.letterwall').forEach(function (sec) {
+      var word = (sec.getAttribute('data-word') || 'WORK').split('');
+      var host = sec.querySelector('.lw-rows');
+      if (!host) return;
+      host.innerHTML = '';
+      word.forEach(function (ch, ri) {
+        var row = document.createElement('div');
+        row.className = 'lw-row';
+        row.setAttribute('data-dir', ri % 2 ? -1 : 1);
+        for (var i = 0; i < 18; i++) {
+          var s = document.createElement('span');
+          s.textContent = ch;
+          s.style.transform = 'rotate(' + ((Math.random() - 0.5) * 9).toFixed(1) + 'deg)';
+          row.appendChild(s);
+        }
+        host.appendChild(row);
+      });
+    });
+  })();
+
+  // ============ 4. GSAP 动效 ============
+  function forceVisible() {
+    document.querySelectorAll('.rv, .hw').forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+    document.querySelectorAll('.bar-fill').forEach(function (el) { el.style.width = (el.getAttribute('data-w') || 0) + '%'; });
+  }
+
+  if (typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') { forceVisible(); return; }
+
+  try {
+    gsap.registerPlugin(ScrollTrigger);
+    var EASE = 'power4.out';
+
+    // 顶部进度条
+    gsap.to('#scrollProgress', { width: '100%', ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
+
+    // Hero 巨型主词：遮罩上滑
+    gsap.from('.hw', { yPercent: 115, duration: 1.1, ease: 'expo.out', stagger: 0.12, delay: 0.15 });
+
+    // 区块大标题：遮罩上滑
+    gsap.utils.toArray('h2.mask > span').forEach(function (sp) {
+      gsap.from(sp, {
+        yPercent: 120, autoAlpha: 0, duration: 1.0, ease: 'expo.out',
+        scrollTrigger: { trigger: sp, start: 'top 88%', once: true }
+      });
+    });
+
+    // 内容块：按区块 data-anim 决定方向（上 / 左 / 右），增加切换变化
+    gsap.utils.toArray('section').forEach(function (sec) {
+      var items = sec.querySelectorAll('.rv');
+      if (!items.length) return;
+      var mode = sec.getAttribute('data-anim') || 'up';
+      var from = mode === 'left' ? { x: -56, autoAlpha: 0 }
+        : mode === 'right' ? { x: 56, autoAlpha: 0 }
+          : { y: 34, autoAlpha: 0 };
+      var to = (mode === 'left' || mode === 'right') ? { x: 0 } : { y: 0 };
+      gsap.set(items, from);
+      ScrollTrigger.batch(items, {
+        start: 'top 90%',
+        onEnter: function (b) {
+          gsap.to(b, Object.assign({ autoAlpha: 1, duration: 0.8, ease: EASE, stagger: { each: 0.08, from: 'start' }, overwrite: true }, to));
+        }
+      });
+    });
+
+    // 作品字母墙：字母弹入 + 滚动横向漂移
+    gsap.utils.toArray('.lw-row').forEach(function (row) {
+      var spans = row.querySelectorAll('span');
+      gsap.from(spans, {
+        yPercent: 70, scale: 0.4, autoAlpha: 0, transformOrigin: '50% 100%',
+        duration: 0.9, ease: 'back.out(1.7)', stagger: { each: 0.012, from: 'center' },
+        scrollTrigger: { trigger: row, start: 'top 94%', once: true }
+      });
+      var dir = parseFloat(row.getAttribute('data-dir')) || 1;
+      gsap.to(row, {
+        xPercent: dir * 6, ease: 'none',
+        scrollTrigger: { trigger: row.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+
+    // 宣言：随滚动从左到右"写入"
+    var mani = document.getElementById('manifesto');
+    if (mani) {
+      gsap.fromTo(mani, { clipPath: 'inset(0 100% 0 0)' },
+        { clipPath: 'inset(0 0% 0 0)', ease: 'none',
+          scrollTrigger: { trigger: mani, start: 'top 82%', end: 'top 34%', scrub: true } });
+    }
+
+    // 板块互动：悬停放大震动 + 像素爆裂
+    if (window.matchMedia('(hover: hover)').matches) {
+      function pixelBurst(el) {
+        var r = el.getBoundingClientRect();
+        for (var i = 0; i < 12; i++) {
+          var p = document.createElement('div');
+          p.className = 'pixel';
+          var sz = 5 + Math.random() * 11;
+          p.style.width = sz + 'px';
+          p.style.height = sz + 'px';
+          p.style.left = (r.left + Math.random() * r.width) + 'px';
+          p.style.top = (r.top + Math.random() * r.height) + 'px';
+          p.style.background = i % 2 ? '#0A0A0A' : '#D6FF3D';
+          document.body.appendChild(p);
+          var ang = Math.random() * Math.PI * 2, dist = 40 + Math.random() * 95;
+          gsap.to(p, {
+            x: Math.cos(ang) * dist, y: Math.sin(ang) * dist,
+            rotation: (Math.random() - 0.5) * 220, autoAlpha: 0,
+            duration: 0.55 + Math.random() * 0.45, ease: 'power3.out',
+            onComplete: function () { this.targets()[0].remove(); }
+          });
+        }
+      }
+      gsap.utils.toArray('.rv').forEach(function (el) {
+        var last = 0;
+        el.addEventListener('mouseenter', function () {
+          var now = Date.now();
+          if (now - last < 450) return;
+          last = now;
+          gsap.to(el, {
+            keyframes: [
+              { scale: 1.04, x: -5, duration: 0.08 },
+              { x: 5, duration: 0.06 },
+              { x: -4, duration: 0.06 },
+              { x: 3, duration: 0.06 },
+              { scale: 1, x: 0, duration: 0.2, ease: 'power2.out' }
+            ], overwrite: 'auto'
+          });
+          pixelBurst(el);
+        });
+      });
+    }
+
+    // 技能条：宽度增长
+    gsap.utils.toArray('.bar-fill').forEach(function (el) {
+      gsap.to(el, {
+        width: (el.getAttribute('data-w') || 0) + '%', duration: 1.1, ease: EASE,
+        scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+      });
+    });
+
+    // 数字递增
+    gsap.utils.toArray('.stat-number').forEach(function (el) {
+      var end = parseInt((el.textContent || '').replace(/\D/g, ''), 10);
+      if (!end) return;
+      var o = { v: 0 };
+      gsap.to(o, {
+        v: end, duration: 1.8, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        onUpdate: function () { el.textContent = Math.round(o.v); },
+        onComplete: function () { el.textContent = end; }
+      });
+    });
+
+    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { ScrollTrigger.refresh(); }); }
+  } catch (err) {
+    forceVisible();
+  }
+})();
+</script>
+</body>
+</html>
